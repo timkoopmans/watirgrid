@@ -50,13 +50,13 @@ describe WatirGrid do
   	@provider.start
   end
   
-  it 'find a default browser registered on a ring server specified by port' do
+  it 'should find a default browser registered on a ring server specified by port' do
     grid = WatirGrid.new(:ring_server_port => 12351)
   	grid.start
   	grid.browsers.size.should == 1
   end
   
-  it 'find a safari browser registered on a ring server specified by port' do
+  it 'should find a safari browser registered on a ring server specified by port' do
     @provider = Provider.new(:ring_server_port => 12351, :browser => 'safari')
   	@provider.start
     grid = WatirGrid.new(:ring_server_port => 12351)
@@ -73,7 +73,7 @@ describe WatirGrid do
     threads.each {|thread| thread.join}
   end
   
-  it 'find a firefox browser registered on a ring server specified by port' do
+  it 'should find a firefox browser registered on a ring server specified by port' do
     @provider = Provider.new(:ring_server_port => 12351, :browser => 'firefox')
   	@provider.start
     grid = WatirGrid.new(:ring_server_port => 12351)
