@@ -1,6 +1,19 @@
 require 'rubygems'
-require 'firewatir'
-include FireWatir
+begin
+    require 'watir'
+rescue LoadError
+end
+
+begin
+    require 'safariwatir'
+rescue LoadError
+end
+
+begin
+    require 'firewatir'
+    include FireWatir
+rescue LoadError
+end
 
 module Rinda
   #
@@ -23,22 +36,45 @@ module Rinda
 end
 
 module Watir
-  
+  #
+  # Extend Watir with a Provider namespace
+  # to determine which browser type is supported by the 
+  # remote DRb process. This returns the DRb front object.
+  #
   class Provider
 
     include DRbUndumped
 
     attr_reader :browser
 
-    def initialize    
-      @browser = FireWatir::Firefox    
+    def initialize(browser = nil)
+        browser = (browser || 'tmp').downcase.to_sym  
+        case browser
+        when :safari
+          @browser = Watir::Safari
+        when :firefox
+          @browser = FireWatir::Firefox 
+        when :ie
+          @browser = Watir::IE
+        else
+          @browser = find_supported_browser
+        end    
+    end
+    
+    def find_supported_browser
+        if Watir::Safari then return Watir::Safari end
+        if Watir::IE then return Watir::IE end
+        if FireWatir::Firefox then return FireWatir::Firefox end
     end
 
     def new_browser   
-      @browser.new   
+      if @browser.nil?
+        find_supported_browser.new
+      else
+        @browser.new
+      end 
   	end 
 
   end
-  
-  
+    
 end

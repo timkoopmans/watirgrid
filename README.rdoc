@@ -1,6 +1,6 @@
 = watirgrid
 
-Description goes here.
+WatirGrid allows for distributed testing across a grid network using Watir.
 
 == Note on Patches/Pull Requests
  

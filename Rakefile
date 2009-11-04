@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "watirgrid"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{WatirGrid: Web Application Testing in Ruby across a grid network.}
+    gem.description = %Q{WatirGrid allows for distributed testing across a grid network using Watir.}
     gem.email = "tim.koops@gmail.com"
     gem.homepage = "http://github.com/90kts/watirgrid"
     gem.authors = ["Tim Koopmans"]
