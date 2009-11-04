@@ -5,22 +5,32 @@ WatirGrid allows for distributed testing across a grid network using Watir.
 Basic instructions are:
 
 Pick a server to host the 'controller' for the ring server and execute the following:
+
 $ ./controller.rb -l INFO
 
 This should find your external facing IP and start the corresponding DRb and Ring Servers
+
 DRb server started on: druby://192.168.1.105:11235
+
 Ring server started on: druby://192.168.1.105:12358
 
 On each client PC, host the 'provider' for the distributed watir objects
+
 $  ./provider.rb -l INFO
 
 This should find the recently started Ring Server and start a corresponding Ring Provider
+
 DRb server started on: druby://192.168.1.105:64864
+
 Ring Provider started.
 
 You will now be able to execute commands across remote browsers on your grid network.
+
 Check the watirgid_spec.rb for some examples
+
 e.g.
+
+<pre>
 grid = WatirGrid.new(:ring_server_port => 12358)
 grid.start
 threads = []
@@ -32,7 +42,7 @@ grid.browsers.each { |browser|
     end
 }
 threads.each {|thread| thread.join}
-
+</pre>
 == Copyright
 
 Copyright (c) 2009 Tim Koopmans. See LICENSE for details.
