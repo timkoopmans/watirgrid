@@ -28,7 +28,9 @@ Gem::Specification.new do |s|
      "lib/watirgrid.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
-     "spec/watirgrid_spec.rb"
+     "spec/tuple_spec.rb",
+     "spec/watirgrid_spec.rb",
+     "watirgrid.gemspec"
   ]
   s.homepage = %q{http://github.com/90kts/watirgrid}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -37,6 +39,7 @@ Gem::Specification.new do |s|
   s.summary = %q{WatirGrid: Web Application Testing in Ruby across a grid network.}
   s.test_files = [
     "spec/spec_helper.rb",
+     "spec/tuple_spec.rb",
      "spec/watirgrid_spec.rb"
   ]
 
