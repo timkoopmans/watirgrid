@@ -16,7 +16,7 @@ On each client PC, host the 'provider' for the distributed watir objects
 
 This should find the recently started Ring Server and start a corresponding Ring Provider
   DRb server started on : druby://192.168.1.105:64864
-  New tuple registered  : druby://192.168.1.105:12351
+  New tuple registered  : druby://192.168.1.105:12358
 
 You will now be able to execute commands across remote browsers on your grid network.
 
