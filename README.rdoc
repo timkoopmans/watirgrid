@@ -20,7 +20,7 @@ This should find the recently started Ring Server and register a tuple for the W
 
 You will now be able to execute commands across remote browsers on your grid network.
 
-Check the watirgid_spec.rb for some examples
+Check the watirgid_spec.rb for some examples ...
 
 e.g.
   grid = WatirGrid.new(:ring_server_port => 12358)
@@ -49,10 +49,10 @@ For more help see:
   $  ./provider.rb -h
   Usage: provider.rb [options]
   Specific options:
-      -r, --ring-server-port PORT      Specify Ring Server port to broadcast on
-      -b, --browser-type TYPE          Specify browser type to register {ie|firefox|safari}
-      -l, --log-level LEVEL            Specify log level {DEBUG|INFO|ERROR}
-      -h, --help                       Show this message
+    -r, --ring-server-port PORT      Specify Ring Server port to broadcast on
+    -b, --browser-type TYPE          Specify browser type to register {ie|firefox|safari}
+    -l, --log-level LEVEL            Specify log level {DEBUG|INFO|ERROR}
+    -h, --help                       Show this message
   
 I'll update the wiki soon'ish!
 
