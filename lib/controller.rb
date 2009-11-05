@@ -19,7 +19,7 @@ class Controller
     
     logfile = properties[:logfile] || STDOUT
     @log  = Logger.new(logfile, 'daily')
-    @log.level = properties[:loglevel] || Logger::ERROR
+    @log.level = properties[:loglevel] || Logger::INFO
     @log.datetime_format = "%Y-%m-%d %H:%M:%S "    
     
     @log.debug("DRB Server Port #{@drb_server_port}\nRing Server Port #{@ring_server_port}")
@@ -41,7 +41,7 @@ class Controller
     @drb_server_uri = drb_server.uri
     
     # log DRb server uri
-    @log.info("DRb server started on: #{@drb_server_uri}")
+    @log.info("DRb server started on : #{@drb_server_uri}")
     
     # start the Ring Server
     ring_server = Rinda::RingServer.new(tuple_space, @host, @ring_server_port)

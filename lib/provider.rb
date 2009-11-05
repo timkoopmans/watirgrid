@@ -21,7 +21,7 @@ class Provider
     
     logfile = properties[:logfile] || STDOUT
     @log  = Logger.new(logfile, 'daily')
-    @log.level = properties[:loglevel] || Logger::ERROR
+    @log.level = properties[:loglevel] || Logger::INFO
     @log.datetime_format = "%Y-%m-%d %H:%M:%S "   
     
     @log.debug("DRB Server Port #{@drb_server_port}\nRing Server Port #{@ring_server_port}")
@@ -43,7 +43,7 @@ class Provider
     @drb_server_uri = drb_server.uri
     
     # log DRb server uri
-    @log.info("DRb server started on: #{@drb_server_uri}")
+    @log.info("DRb server started on : #{@drb_server_uri}")
 
     # create a service tuple
     @tuple = [:name, :WatirProvider, watir_provider, 'A watir provider']   
@@ -51,12 +51,13 @@ class Provider
     # locate the Rinda Ring Server via a UDP broadcast
     ring_server = Rinda::RingFinger.new(@host, @ring_server_port)
     ring_server = ring_server.lookup_ring_any
+    @log.info("Ring server found on : druby://#{@host}:#{@ring_server_port}")
     
     # advertise this service on the primary remote tuple space
     ring_server.write(@tuple, @renewer)
     
     # log DRb server uri
-    @log.info("Ring Provider started.")
+    @log.info("New tuple registered  : druby://#{@host}:#{@ring_server_port}")
   
     # wait for explicit stop via ctrl-c
     DRb.thread.join if __FILE__ == $0  
@@ -67,7 +68,7 @@ class Provider
     DRb.stop_service
     
     # log server stopped
-    @log.info("DRb server stopped on: #{@drb_server_uri}")    
+    @log.info("DRb server stopped on : #{@drb_server_uri}")    
   end
   
 end

@@ -53,6 +53,7 @@ describe WatirGrid do
   it 'should find a default browser registered on a ring server specified by port' do
     grid = WatirGrid.new(:ring_server_port => 12351)
   	grid.start
+  	grid.read_all
   	grid.browsers.size.should == 1
   end
   
@@ -61,13 +62,12 @@ describe WatirGrid do
   	@provider.start
     grid = WatirGrid.new(:ring_server_port => 12351)
   	grid.start
+  	grid.read_all
   	grid.browsers.size.should == 2
   	threads = []
     grid.browsers.each { |browser|
         threads << Thread.new do 
-            browser.goto("http://www.google.com")
-            browser.text_field(:name, 'q').set("github watirgrid")
-            browser.button(:name, "btnI").click
+          browser.goto("http://www.watir.com")
         end
     }
     threads.each {|thread| thread.join}
@@ -78,14 +78,12 @@ describe WatirGrid do
   	@provider.start
     grid = WatirGrid.new(:ring_server_port => 12351)
   	grid.start
+  	grid.read_all
   	grid.browsers.size.should == 3
   	threads = []
     grid.browsers.each { |browser|
         threads << Thread.new do 
-            sleep 5 # to wait for Firefox to startup
-            browser.goto("http://www.google.com")
-            browser.text_field(:name, 'q').set("github watirgrid")
-            browser.button(:name, "btnI").click
+            browser.goto("http://www.watir.com")
         end
     }
     threads.each {|thread| thread.join}
