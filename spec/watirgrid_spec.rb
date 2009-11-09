@@ -1,7 +1,4 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require File.dirname(__FILE__) + '/../lib/controller.rb'
-require File.dirname(__FILE__) + '/../lib/provider.rb'
-require File.dirname(__FILE__) + '/../lib/watirgrid.rb'
 
 describe Controller do
   it 'should start a DRb and Ring Server when specifying NO interface or port' do
@@ -42,55 +39,3 @@ describe Provider do
   end
 end
 
-describe WatirGrid do
-  before(:all) do
-    @controller = Controller.new(:ring_server_port => 12351)
-    @controller.start
-    @provider = Provider.new(:ring_server_port => 12351)
-  	@provider.start
-  end
-  
-  it 'should find a default browser registered on a ring server specified by port' do
-    grid = WatirGrid.new(:ring_server_port => 12351)
-  	grid.start
-  	grid.read_all
-  	grid.browsers.size.should == 1
-  end
-  
-  it 'should find a safari browser registered on a ring server specified by port' do
-    @provider = Provider.new(:ring_server_port => 12351, :browser => 'safari')
-  	@provider.start
-    grid = WatirGrid.new(:ring_server_port => 12351)
-  	grid.start
-  	grid.read_all
-  	grid.browsers.size.should == 2
-  	threads = []
-    grid.browsers.each { |browser|
-        threads << Thread.new do 
-          browser.goto("http://www.watir.com")
-        end
-    }
-    threads.each {|thread| thread.join}
-  end
-  
-  it 'should find a firefox browser registered on a ring server specified by port' do
-    @provider = Provider.new(:ring_server_port => 12351, :browser => 'firefox')
-  	@provider.start
-    grid = WatirGrid.new(:ring_server_port => 12351)
-  	grid.start
-  	grid.read_all
-  	grid.browsers.size.should == 3
-  	threads = []
-    grid.browsers.each { |browser|
-        threads << Thread.new do 
-            browser.goto("http://www.watir.com")
-        end
-    }
-    threads.each {|thread| thread.join}
-  end
-    
-  after(:all) do
-    @provider.stop
-    @controller.stop
-  end
-end

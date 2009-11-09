@@ -23,19 +23,14 @@ You will now be able to execute commands across remote browsers on your grid net
 Check the watirgid_spec.rb for some examples ...
 
 e.g.
-  grid = WatirGrid.new(:ring_server_port => 12358)
-  grid.start
-  grid.read_all
-  threads = []
-  grid.browsers.each { |browser|
-      threads << Thread.new do 
-          browser.goto("http://www.google.com")
-          browser.text_field(:name, 'q').set("watirgrid")
-          browser.button(:name, "btnI").click
-      end
-  }
-  threads.each {|thread| thread.join}
-
+  browsers = Watir::Grid.new(:ring_server_port => 12351)
+	browsers.start(:quantity => 2, :read_all => true)
+	browsers.size.should == 2
+	browsers.each do |browser, browser_id|
+    browser.goto("http://www.google.com")
+    browser.text_field(:name, 'q').set("watirgrid")
+    browser.button(:name, "btnI").click
+  end
 
 For more help see:
   $  ./controller.rb -h
