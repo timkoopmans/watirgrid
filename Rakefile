@@ -11,6 +11,7 @@ begin
     gem.homepage = "http://github.com/90kts/watirgrid"
     gem.authors = ["Tim Koopmans"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.version = "0.0.1"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
@@ -36,7 +37,6 @@ task :default => :spec
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "watirgrid #{version}"
   rdoc.rdoc_files.include('README*')

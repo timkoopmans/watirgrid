@@ -129,10 +129,6 @@ module Watir
     def size
       @browsers.size
     end
-    
-    def index
-      @browsers.index(self)
-    end
        
     private
     
