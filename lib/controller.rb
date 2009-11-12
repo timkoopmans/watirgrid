@@ -78,13 +78,16 @@ if __FILE__ == $0
       opts.banner = "Usage: controller.rb [options]"
       opts.separator ""
       opts.separator "Specific options:"
-      opts.on("-d PORT", "--drb-server-port", Integer, "Specify DRb Server port to listen on") do |d|
+      opts.on("-d PORT", "--drb-server-port", Integer, 
+      "Specify DRb Server port to listen on") do |d|
         options[:drb_server_port] = d
       end              
-      opts.on("-r PORT", "--ring-server-port", Integer, "Specify Ring Server port to listen on") do |r|
+      opts.on("-r PORT", "--ring-server-port", Integer, 
+      "Specify Ring Server port to listen on") do |r|
         options[:ring_server_port] = r 
       end
-      opts.on("-l LEVEL", "--log-level", String, "Specify log level {DEBUG|INFO|ERROR}") do |l|
+      opts.on("-l LEVEL", "--log-level", String, 
+      "Specify log level {DEBUG|INFO|ERROR}") do |l|
         case l
         when 'DEBUG'
           options[:loglevel] = Logger::DEBUG

@@ -31,6 +31,8 @@ class Provider
   def start
     # create a DRb 'front' object
     watir_provider = Watir::Provider.new(@browser_type)
+    architecture = Config::CONFIG['arch']
+    hostname = ENV['SERVER_NAME'] || %x{hostname}.strip
 
      # start the DRb Server
     drb_server = DRb.start_service("druby://#{@host}:#{@drb_server_port}")  
@@ -40,7 +42,15 @@ class Provider
     @log.info("DRb server started on : #{@drb_server_uri}")
 
     # create a service tuple
-    @tuple = [:name, :WatirProvider, watir_provider, 'A watir provider']   
+    @tuple = [
+                :name, 
+                :WatirProvider, 
+                watir_provider, 
+                'A watir provider', 
+                hostname,
+                architecture,
+                @browser_type
+              ]   
     
     # locate the Rinda Ring Server via a UDP broadcast
     ring_server = Rinda::RingFinger.new(@host, @ring_server_port)
@@ -84,13 +94,16 @@ if __FILE__ == $0
       opts.banner = "Usage: provider.rb [options]"
       opts.separator ""
       opts.separator "Specific options:"
-      opts.on("-r PORT", "--ring-server-port", Integer, "Specify Ring Server port to broadcast on") do |r|
+      opts.on("-r PORT", "--ring-server-port", Integer, 
+      "Specify Ring Server port to broadcast on") do |r|
         options[:ring_server_port] = r 
       end
-      opts.on("-b TYPE", "--browser-type", String, "Specify browser type to register {ie|firefox|safari}") do |b|
+      opts.on("-b TYPE", "--browser-type", String, 
+      "Specify browser type to register {ie|firefox|safari}") do |b|
         options[:browser_type] = b 
       end
-      opts.on("-l LEVEL", "--log-level", String, "Specify log level {DEBUG|INFO|ERROR}") do |l|
+      opts.on("-l LEVEL", "--log-level", String, 
+      "Specify log level {DEBUG|INFO|ERROR}") do |l|
         case l
         when 'DEBUG'
           options[:loglevel] = Logger::DEBUG

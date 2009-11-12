@@ -16,7 +16,8 @@ describe Controller do
   end
 	
 	it 'should start a DRb and Ring Server on specified ports' do
-		controller = Controller.new(:drb_server_port => 11235, :ring_server_port => 12358)
+		controller = Controller.new(:drb_server_port => 11235, 
+		:ring_server_port => 12358)
 		controller.start
 		controller.drb_server_uri.should =~ /druby/
 		controller.stop

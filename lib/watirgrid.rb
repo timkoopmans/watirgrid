@@ -103,11 +103,9 @@ module Watir
     ##
     # Start required services
     def start(params = {})
-      quantity = params[:quantity] || -1  
       start_drb_server
       find_ring_server
-      read_all(quantity) if params[:read_all]
-      take_all(quantity) if params[:take_all]
+      get_tuples(params)
     end
     
     ##
@@ -159,27 +157,38 @@ module Watir
     end
 
     ##
-    # Read all tuple spaces on ringserver
-    def read_all(quantity)
+    # Get all tuple spaces on ringserver
+    def get_tuples(params = {})
+      quantity = params[:quantity] || -1  
+      architecture = params[:architecture] || nil
+      browser_type = params[:browser_type] || nil
+      
       @browsers = []
-      all_services = @ring_server.read_all([:name, nil, nil, nil])
+      services = @ring_server.read_all([
+        :name, 
+        nil, # watir provider
+        nil, # browser front object
+        nil, # provider description
+        nil, # hostname
+        architecture, 
+        browser_type])
 
-      @log.info("Found #{all_services.size} services.")
-      all_services[1..quantity].each do |service|
-        @browsers << service[2].new_browser
-      end
-    end
-
-    ##
-    # Take all tuple spaces on ringserver
-    def take_all(quantity)
-      @browsers = []
-      all_services = @ring_server.read_all([:name, nil, nil, nil])
-
-      @log.info("Found #{all_services.size} services.")
-      all_services[1..quantity].each do |service|
-        @ring_server.take(service)
-        @browsers << service[2].new_browser
+      @log.info("Found #{services.size} services.")
+      if services.size > 0 then
+        services[1..quantity].each do |service|
+          hostname = service[4]
+          if params[:hostnames] then
+            if params[:hostnames][hostname] then
+              @browsers << service[2].new_browser 
+              @ring_server.take(service)if params[:take_all] == true
+            end
+          else
+            @browsers << service[2].new_browser
+            @ring_server.take(service)if params[:take_all] == true
+          end
+        end
+      else
+        @browsers
       end
     end
 
