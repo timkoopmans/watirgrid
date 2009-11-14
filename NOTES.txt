@@ -1,0 +1,14 @@
+= Release Notes
+== 0.0.1
+Added access control lists for the controller and provider. This lets the user specify ACLs by way of simple white/blacklist security similar to that used by the Unix /etc/hosts.allow and /etc/hosts.deny files. The ACL constructor takes an array of strings. The first string of a pair is always “allow” or “deny”, and it’s followed by the address or addresses to allow or deny access.
+
+e.g. ./provider.rb -a deny,all,allow,127.0.0.1
+This would deny all access to this provider by default and allow access only from the localhost (127.0.0.1). This is the default setting if no ACLs are specified from the command line. This would affect all connectivity from the controller to the providers.
+
+e.g. ./controller.rb -a deny,all,allow,192.168.1.*
+This would deny all access to the controller by default with access allowed from any host in the 192.168.1.* subnet. This would affect all connectivity from the providers to the controller.
+
+---
+
+Added startup bin scripts for the provider and controller. Ruby Gems will automatically deploy these on installation.
+

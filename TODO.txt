@@ -9,10 +9,8 @@ Network breakdown times
 
 == Protocol
 Support for tcp or http?
-Secure ACL with deny/allow
 
 == Tests
 How many providers is suitable with druby
+Comparison in performance with proxied objects (DRbUndumped) vs. copied objects
 
-== General
-startup scripts/batch files for controller and provider

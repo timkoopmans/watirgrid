@@ -7,6 +7,7 @@ require 'rinda/tuplespace'
 require 'rinda/ring'
 require 'logger'
 require 'optparse'
+require 'drb/acl'
 
 module Rinda
 
@@ -37,6 +38,7 @@ class Controller
     @host = params[:interface]  || external_interface
     @drb_server_port  = params[:drb_server_port]  || 0
     @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
+    @acls = params[:acls]
 
     logfile = params[:logfile] || STDOUT
     @log  = Logger.new(logfile, 'daily')
@@ -51,6 +53,9 @@ class Controller
   def start  
     # create a parent Tuple Space
     tuple_space = Rinda::TupleSpace.new
+
+    # Setup the security--remember to call before DRb.start_service()
+    DRb.install_acl(ACL.new(@acls))
 
     # start the DRb Server
     drb_server = DRb.start_service("druby://#{@host}:#{@drb_server_port}", tuple_space)  
@@ -94,43 +99,3 @@ class Controller
 
 end
 
-if __FILE__ == $0   
-  options = {}
-  OptionParser.new do |opts|
-    opts.banner = "Usage: controller.rb [options]"
-    opts.separator ""
-    opts.separator "Specific options:"
-    opts.on("-d PORT", "--drb-server-port", Integer, 
-      "Specify DRb Server port to listen on") do |d|
-        options[:drb_server_port] = d
-    end              
-    opts.on("-r PORT", "--ring-server-port", Integer, 
-      "Specify Ring Server port to listen on") do |r|
-        options[:ring_server_port] = r 
-    end
-    opts.on("-l LEVEL", "--log-level", String, 
-      "Specify log level {DEBUG|INFO|ERROR}") do |l|
-        case l
-        when 'DEBUG'
-          options[:loglevel] = Logger::DEBUG
-        when 'INFO'
-          options[:loglevel] = Logger::INFO 
-        when 'ERROR'
-          options[:loglevel] = Logger::ERROR
-        else
-          options[:loglevel] = Logger::ERROR
-        end
-      end
-    opts.on_tail("-h", "--help", "Show this message") do
-      puts opts
-      exit
-    end          
-    end.parse!
-
-  controller = Controller.new(
-    :drb_server_port  => options[:drb_server_port]  || 11235, 
-    :ring_server_port => options[:ring_server_port] || 12358,
-    :loglevel => options[:loglevel]
-  )
-  controller.start	
-end

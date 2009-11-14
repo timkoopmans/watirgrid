@@ -33,7 +33,7 @@ module Watir
   # remote DRb process. This returns the DRb front object.
   class Provider
 
-    include DRbUndumped
+    include DRbUndumped # all objects will be proxied, not copied
 
     attr_reader :browser
 
@@ -98,8 +98,9 @@ class Provider
     hostname = ENV['SERVER_NAME'] || %x{hostname}.strip
 
     # Setup the security--remember to call before DRb.start_service()
-    DRb.install_acl(ACL.new(%w{ deny all } ) )
-     # start the DRb Server
+    DRb.install_acl(ACL.new(@acls))
+
+    # start the DRb Server
     drb_server = DRb.start_service("druby://#{@host}:#{@drb_server_port}")  
 
     # obtain DRb Server uri
@@ -153,42 +154,3 @@ class Provider
 
 end
 
-if __FILE__ == $0   
-  options = {}
-  OptionParser.new do |opts|
-    opts.banner = "Usage: provider.rb [options]"
-    opts.separator ""
-    opts.separator "Specific options:"
-    opts.on("-r PORT", "--ring-server-port", Integer, 
-    "Specify Ring Server port to broadcast on") do |r|
-      options[:ring_server_port] = r 
-    end
-    opts.on("-b TYPE", "--browser-type", String, 
-    "Specify browser type to register {ie|firefox|safari}") do |b|
-      options[:browser_type] = b 
-    end
-    opts.on("-l LEVEL", "--log-level", String, 
-    "Specify log level {DEBUG|INFO|ERROR}") do |l|
-      case l
-      when 'DEBUG'
-        options[:loglevel] = Logger::DEBUG
-      when 'INFO'
-        options[:loglevel] = Logger::INFO 
-      when 'ERROR'
-        options[:loglevel] = Logger::ERROR
-      else
-        options[:loglevel] = Logger::ERROR
-      end
-    end
-    opts.on_tail("-h", "--help", "Show this message") do
-      puts opts
-      exit
-    end          
-  end.parse!
-
-  provider = Provider.new(
-    :ring_server_port => options[:ring_server_port] || 12358,
-    :browser_type => options[:browser_type] || nil,
-    :loglevel => options[:loglevel])
-  provider.start	
-end

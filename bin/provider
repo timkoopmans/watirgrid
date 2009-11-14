@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'controller'
+require 'provider'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: provider [options]"
+  opts.separator ""
+  opts.separator "Specific options:"
+  opts.on("-r PORT", "--ring-server-port", Integer, 
+  "Specify Ring Server port to broadcast on") do |r|
+    options[:ring_server_port] = r 
+  end
+  opts.on("-b TYPE", "--browser-type", String, 
+  "Specify browser type to register {ie|firefox|safari}") do |b|
+    options[:browser_type] = b 
+  end
+  opts.on("-a ACLS", "--access-control-list", Array,
+    "Specify a comma separated Access Control List") do |a|
+      options[:acls] = a
+  end
+  opts.on("-l LEVEL", "--log-level", String, 
+  "Specify log level {DEBUG|INFO|ERROR}") do |l|
+    case l
+    when 'DEBUG'
+      options[:loglevel] = Logger::DEBUG
+    when 'INFO'
+      options[:loglevel] = Logger::INFO 
+    when 'ERROR'
+      options[:loglevel] = Logger::ERROR
+    else
+      options[:loglevel] = Logger::ERROR
+    end
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end          
+end.parse!
+
+provider = Provider.new(
+  :ring_server_port => options[:ring_server_port] || 12358,
+  :browser_type => options[:browser_type] || nil,
+  :acls => options[:acls] || %w{ deny all allow 127.0.0.1 },
+  :loglevel => options[:loglevel])
+provider.start
+DRb.thread.join

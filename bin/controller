@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'controller'
+require 'provider'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: controller [options]"
+  opts.separator ""
+  opts.separator "Specific options:"
+  opts.on("-d PORT", "--drb-server-port", Integer, 
+    "Specify DRb Server port to listen on") do |d|
+      options[:drb_server_port] = d
+  end              
+  opts.on("-r PORT", "--ring-server-port", Integer, 
+    "Specify Ring Server port to listen on") do |r|
+      options[:ring_server_port] = r 
+  end
+  opts.on("-a ACLS", "--access-control-list", Array,
+    "Specify a comma separated Access Control List") do |a|
+      options[:acls] = a
+  end
+  opts.on("-l LEVEL", "--log-level", String, 
+    "Specify log level {DEBUG|INFO|ERROR}") do |l|
+      case l
+      when 'DEBUG'
+        options[:loglevel] = Logger::DEBUG
+      when 'INFO'
+        options[:loglevel] = Logger::INFO 
+      when 'ERROR'
+        options[:loglevel] = Logger::ERROR
+      else
+        options[:loglevel] = Logger::ERROR
+      end
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end          
+  end.parse!
+
+controller = Controller.new(
+  :drb_server_port  => options[:drb_server_port]  || 11235, 
+  :ring_server_port => options[:ring_server_port] || 12358,
+  :acls => options[:acls] || %w{ deny all allow 127.0.0.1 },
+  :loglevel => options[:loglevel]
+)
+controller.start
+DRb.thread.join
