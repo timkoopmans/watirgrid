@@ -1,83 +1,9 @@
 require 'rubygems'
 require 'controller'
 require 'provider'
-begin
-    require 'watir'
-rescue LoadError
-end
-
-begin
-    require 'safariwatir'
-rescue LoadError
-end
-
-begin
-    require 'firewatir'
-    include FireWatir
-rescue LoadError
-end
-
-module Rinda
-  #
-  # Extend Rinda::RingServer to allow a hostname/ipaddress
-  # to be passed in as parameter arguments. Also pass back
-  # attribute for ring server uri.
-  #
-  class RingServer
-    attr_accessor :uri
-    
-    def initialize(ts, host='', port=Ring_PORT)
-      @uri = "druby://#{host}:#{port}"
-      @ts = ts
-      @soc = UDPSocket.open
-      @soc.bind(host, port)
-      @w_service = write_service
-      @r_service = reply_service
-    end
-  end
-end
 
 module Watir
-  #
-  # Extend Watir with a Provider class
-  # to determine which browser type is supported by the 
-  # remote DRb process. This returns the DRb front object.
-  class Provider
 
-    include DRbUndumped
-
-    attr_reader :browser
-
-    def initialize(browser = nil)
-        browser = (browser || 'tmp').downcase.to_sym  
-        case browser
-        when :safari
-          @browser = Watir::Safari
-        when :firefox
-          @browser = FireWatir::Firefox 
-        when :ie
-          @browser = Watir::IE
-        else
-          @browser = find_supported_browser
-        end    
-    end
-    
-    def find_supported_browser
-        if Watir::Safari then return Watir::Safari end
-        if Watir::IE then return Watir::IE end
-        if FireWatir::Firefox then return FireWatir::Firefox end
-    end
-
-    def new_browser   
-      if @browser.nil?
-        find_supported_browser.new
-      else
-        @browser.new
-      end 
-  	end 
-
-  end
-  
   ##
   # Extend Watir with a Grid class which 
   # implements a grid of browsers by connecting to a tuplespace
@@ -93,12 +19,12 @@ module Watir
       @renewer = params[:renewer] || Rinda::SimpleRenewer.new
 
       @quantity = params[:quantity]
-      
+
       logfile = params[:logfile] || STDOUT
       @log  = Logger.new(logfile, 'daily')
       @log.level = params[:loglevel] || Logger::ERROR
       @log.datetime_format = "%Y-%m-%d %H:%M:%S "   
-    end  
+    end
 
     ##
     # Start required services
@@ -107,7 +33,7 @@ module Watir
       find_ring_server
       get_tuples(params)
     end
-    
+
     ##
     # Yield a browser object when iterating over the grid of browsers
     def each
@@ -127,9 +53,9 @@ module Watir
     def size
       @browsers.size
     end
-       
+
     private
-    
+
     ##
     # Get the external facing interface for this server  
     def external_interface    
@@ -159,18 +85,18 @@ module Watir
     ##
     # Get all tuple spaces on ringserver
     def get_tuples(params = {})
-      quantity = params[:quantity] || -1  
+      quantity = params[:quantity] || -1
       architecture = params[:architecture] || nil
       browser_type = params[:browser_type] || nil
       
       @browsers = []
       services = @ring_server.read_all([
-        :name, 
+        :name,
         nil, # watir provider
         nil, # browser front object
         nil, # provider description
         nil, # hostname
-        architecture, 
+        architecture,
         browser_type])
 
       @log.info("Found #{services.size} services.")
@@ -179,7 +105,7 @@ module Watir
           hostname = service[4]
           if params[:hostnames] then
             if params[:hostnames][hostname] then
-              @browsers << service[2].new_browser 
+              @browsers << service[2].new_browser
               @ring_server.take(service)if params[:take_all] == true
             end
           else
@@ -191,8 +117,7 @@ module Watir
         @browsers
       end
     end
-
   end
-  
-    
+
 end
+

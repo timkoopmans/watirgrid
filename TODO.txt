@@ -1,0 +1,18 @@
+== Docs
+better instructions in general
+
+== Providers
+Remote registration of providers
+Re-write tuple space during tear down
+Response times
+Network breakdown times
+
+== Protocol
+Support for tcp or http?
+Secure ACL with deny/allow
+
+== Tests
+How many providers is suitable with druby
+
+== General
+startup scripts/batch files for controller and provider
