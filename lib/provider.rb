@@ -52,9 +52,9 @@ module Watir
     end
 
     def find_supported_browser
-      if Watir::Safari then return Watir::Safari end
       if Watir::IE then return Watir::IE end
       if FireWatir::Firefox then return FireWatir::Firefox end
+      if Watir::Safari then return Watir::Safari end
     end
 
     def new_browser   
