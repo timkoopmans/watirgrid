@@ -98,7 +98,7 @@ class Provider
     architecture = Config::CONFIG['arch']
     hostname = ENV['SERVER_NAME'] || %x{hostname}.strip
 
-    # Setup the security--remember to call before DRb.start_service()
+    # setup the security--remember to call before DRb.start_service()
     DRb.install_acl(ACL.new(@acls))
 
     # start the DRb Server

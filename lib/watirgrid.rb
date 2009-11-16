@@ -43,7 +43,8 @@ module Watir
       @browsers.each do |browser|
         threads << Thread.new do 
           id += 1
-          yield(browser, id)
+          # yields a browser object, ID, hostname, architecture, type
+          yield(browser[2].new_browser, id, browser[4],browser[5],browser[6])
         end
       end
       threads.each {|thread| thread.join}
@@ -93,7 +94,7 @@ module Watir
       browser_type = params[:browser_type] || nil
       
       @browsers = []
-      services = @ring_server.read_all([
+      @tuples = @ring_server.read_all([
         :name,
         nil, # watir provider
         nil, # browser front object
@@ -102,18 +103,19 @@ module Watir
         architecture,
         browser_type])
 
-      @log.info("Found #{services.size} services.")
-      if services.size > 0 then
-        services[1..quantity].each do |service|
-          hostname = service[4]
+      @log.info("Found #{@tuples.size} tuples.")
+      if @tuples.size > 0 then
+        @tuples[1..quantity].each do |tuple|
+          hostname = tuple[4]
           if params[:hostnames] then
+            @log.debug(tuple[4])
             if params[:hostnames][hostname] then
-              @browsers << service[2].new_browser
-              @ring_server.take(service)if params[:take_all] == true
+              @browsers << tuple
+              @ring_server.take(tuple)if params[:take_all] == true
             end
           else
-            @browsers << service[2].new_browser
-            @ring_server.take(service)if params[:take_all] == true
+            @browsers << tuple
+            @ring_server.take(tuple)if params[:take_all] == true
           end
         end
       else

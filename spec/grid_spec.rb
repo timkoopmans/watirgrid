@@ -24,10 +24,6 @@ describe 'WatirGrid' do
     browsers = Watir::Grid.new(:ring_server_port => 12351)
     browsers.start(:quantity => 2, :read_all => true)
     browsers.size.should == 2
-    browsers.each do |browser, browser_id|
-      browser.goto(
-        "http://localhost:4567/load/#{browser_id}/#{browser.object_id}")
-    end
   end
 
   it 'should take any 1 browser in the tuplespace' do
@@ -48,8 +44,8 @@ describe 'WatirGrid' do
     browsers.size.should == 0
   end
 
-  it 'should register 3 new browsers in the tuplespace' do
-    1.upto(3) do 
+  it 'should register 4 new browsers in the tuplespace' do
+    1.upto(4) do 
       provider = Provider.new(:ring_server_port => 12351, 
         :loglevel => Logger::ERROR, :browser_type => 'safari')
       provider.start
@@ -92,10 +88,12 @@ describe 'WatirGrid' do
   end
 
   it 'should take any 1 browser based on specific hostname' do
+    hostname = `hostname`.strip
     browsers = Watir::Grid.new(:ring_server_port => 12351)
     browsers.start(:quantity => 1,
-      :take_all => true, :hostnames => { 
-        "90kts.local" => "127.0.0.1"})
+      :take_all => true, 
+      :hostnames => { hostname => "127.0.0.1"}
+      )
     browsers.size.should == 1
   end
 
@@ -105,6 +103,21 @@ describe 'WatirGrid' do
       :take_all => true, :hostnames => { 
         "tokyo" => "127.0.0.1"})
     browsers.size.should == 0
+  end
+
+  it 'should take the last browser and execute some watir commands' do
+    browsers = Watir::Grid.new(:ring_server_port => 12351)
+    browsers.start(:quantity => 1,
+      :take_all => true)
+      browsers.each do |browser, browser_id, hostname, arch, type|
+        browser_id.should == 1
+        hostname.should == `hostname`.strip
+        arch.should == Config::CONFIG['arch']
+        type.should == 'safari'
+        browser.goto(
+          "http://localhost:4567/load/#{browser_id}/#{browser.object_id}")
+      end
+    browsers.size.should == 1
   end
 
   it 'should find no more browsers in the tuplespace' do
