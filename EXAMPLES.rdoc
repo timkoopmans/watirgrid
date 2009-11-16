@@ -110,12 +110,14 @@ Next we start up the grid, specifying the number of browsers we wish to use, and
   
 There are two methods for accessing the tuple space. 
   :read_all => true
-Will read all browsers in the tuple space provided by the providers. This leaves the tuple open to other clients. 
-
   :take_all => true
-Will take all browsers in the tuple space in a destructive manner. That is, once a tuple has been taken, no other clients will be able to re-use that tuple. This is useful if you do not want concurrent access to the same host, for example, multiple browsers running on the one machine.
+*Read* *All* will read all browsers in the tuple space provided by the providers. This leaves the tuple open to other clients. 
+
+*Take* *All* will take all browsers in the tuple space in a destructive manner. That is, once a tuple has been taken, no other clients will be able to re-use that tuple. This is useful if you do not want concurrent access to the same host, for example, multiple browsers running on the one machine.
 
 The quantity attribute will determine how many browsers are accessed.
+  :quantity => 10
+Will attempt to access 10 tuples if they are available.
 
 Other attributes include:
   :hostnames => { "localhost" => "127.0.0.1"}
