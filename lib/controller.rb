@@ -34,9 +34,10 @@ class Controller
 
   attr_accessor :drb_server_uri, :ring_server_uri
 
-  def initialize(params = {})    
-    @host = params[:interface]  || external_interface
+  def initialize(params = {})
+    @drb_server_host  = params[:drb_server_host]  || external_interface    
     @drb_server_port  = params[:drb_server_port]  || 0
+    @ring_server_host = params[:ring_server_host] || external_interface
     @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
     @acls = params[:acls]
 
@@ -58,14 +59,16 @@ class Controller
     DRb.install_acl(ACL.new(@acls))
 
     # start the DRb Server
-    drb_server = DRb.start_service("druby://#{@host}:#{@drb_server_port}", tuple_space)  
+    drb_server = DRb.start_service(
+      "druby://#{@drb_server_host}:#{@drb_server_port}", tuple_space)  
 
     # obtain DRb Server uri
     @drb_server_uri = drb_server.uri
     @log.info("DRb server started on : #{@drb_server_uri}")
 
     # start the Ring Server
-    ring_server = Rinda::RingServer.new(tuple_space, @host, @ring_server_port)
+    ring_server = Rinda::RingServer.new(tuple_space, 
+      @ring_server_host, @ring_server_port)
 
     # obtain Ring Server uri
     @ring_server_uri = ring_server.uri  

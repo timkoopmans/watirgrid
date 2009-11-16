@@ -8,6 +8,18 @@ OptionParser.new do |opts|
   opts.banner = "Usage: provider [options]"
   opts.separator ""
   opts.separator "Specific options:"
+  opts.on("-H HOST", "--drb-server-host", String, 
+  "Specify DRb Server interface to host on") do |H|
+    options[:drb_server_host] = H || nil
+  end
+  opts.on("-d PORT", "--drb-server-port", Integer, 
+    "Specify DRb Server port to listen on") do |d|
+      options[:drb_server_port] = d
+  end
+  opts.on("-h HOST", "--ring-server-host", String, 
+  "Specify Ring Server host to connect to") do |h|
+    options[:ring_server_host] = h || nil
+  end
   opts.on("-r PORT", "--ring-server-port", Integer, 
   "Specify Ring Server port to broadcast on") do |r|
     options[:ring_server_port] = r 
@@ -40,6 +52,9 @@ OptionParser.new do |opts|
 end.parse!
 
 provider = Provider.new(
+  :drb_server_host => options[:drb_server_host],
+  :drb_server_port  => options[:drb_server_port]  || 11236,
+  :ring_server_host => options[:ring_server_host],
   :ring_server_port => options[:ring_server_port] || 12358,
   :browser_type => options[:browser_type] || nil,
   :acls => options[:acls] || %w{ deny all allow 127.0.0.1 },

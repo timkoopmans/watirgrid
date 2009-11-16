@@ -74,8 +74,9 @@ class Provider
   attr_accessor :drb_server_uri, :ring_server_uri
 
   def initialize(params = {})   
-    @host = params[:interface]  || external_interface
+    @drb_server_host  = params[:drb_server_host]  || external_interface
     @drb_server_port  = params[:drb_server_port]  || 0
+    @ring_server_host = params[:ring_server_host] || external_interface
     @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
 
     @renewer = params[:renewer] || Rinda::SimpleRenewer.new
@@ -101,7 +102,8 @@ class Provider
     DRb.install_acl(ACL.new(@acls))
 
     # start the DRb Server
-    drb_server = DRb.start_service("druby://#{@host}:#{@drb_server_port}")  
+    drb_server = DRb.start_service(
+      "druby://#{@drb_server_host}:#{@drb_server_port}")  
 
     # obtain DRb Server uri
     @drb_server_uri = drb_server.uri
@@ -119,15 +121,15 @@ class Provider
               ]   
 
     # locate the Rinda Ring Server via a UDP broadcast
-    ring_server = Rinda::RingFinger.new(@host, @ring_server_port)
+    ring_server = Rinda::RingFinger.new(@ring_server_host, @ring_server_port)
     ring_server = ring_server.lookup_ring_any
-    @log.info("Ring server found on : druby://#{@host}:#{@ring_server_port}")
+    @log.info("Ring server found on  : druby://#{@ring_server_host}:#{@ring_server_port}")
 
     # advertise this service on the primary remote tuple space
     ring_server.write(@tuple, @renewer)
 
     # log DRb server uri
-    @log.info("New tuple registered  : druby://#{@host}:#{@ring_server_port}")
+    @log.info("New tuple registered  : druby://#{@ring_server_host}:#{@ring_server_port}")
 
     # wait for explicit stop via ctrl-c
     DRb.thread.join if __FILE__ == $0  

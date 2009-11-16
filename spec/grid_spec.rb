@@ -2,11 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe 'WatirGrid' do
   before(:all) do
-    controller = Controller.new(:ring_server_port => 12351,
+    controller = Controller.new(
+      :ring_server_port => 12351,
       :loglevel => Logger::ERROR)
     controller.start
     1.upto(5) do 
-      provider = Provider.new(:ring_server_port => 12351, 
+      provider = Provider.new(
+        :ring_server_port => 12351, 
         :loglevel => Logger::ERROR, :browser_type => 'safari')
       provider.start
     end

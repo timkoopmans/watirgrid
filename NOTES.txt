@@ -12,3 +12,6 @@ This would deny all access to the controller by default with access allowed from
 
 Added startup bin scripts for the provider and controller. Ruby Gems will automatically deploy these on installation.
 
+== 0.0.2
+Allowed specification of remote host for ring server with -h option on provider.
+

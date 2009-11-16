@@ -13,8 +13,9 @@ module Watir
     attr_accessor :drb_server_uri, :ring_server, :browsers
 
     def initialize(params = {})   
-      @host = params[:interface]  || external_interface
+      @drb_server_host  = params[:drb_server_host]  || external_interface
       @drb_server_port  = params[:drb_server_port]  || 0
+      @ring_server_host = params[:ring_server_host] || external_interface
       @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
       @renewer = params[:renewer] || Rinda::SimpleRenewer.new
 
@@ -69,7 +70,8 @@ module Watir
     ##
     # Start the DRb Server
     def start_drb_server
-      drb_server = DRb.start_service("druby://#{@host}:#{@drb_server_port}")  
+      drb_server = DRb.start_service(
+        "druby://#{@drb_server_host}:#{@drb_server_port}")  
       @drb_server_uri = drb_server.uri
       @log.info("DRb server started on : #{@drb_server_uri}")
     end
@@ -77,9 +79,10 @@ module Watir
     ##
     # Locate the Rinda Ring Server via a UDP broadcast
     def find_ring_server
-      @ring_server = Rinda::RingFinger.new(@host, @ring_server_port)
+      @ring_server = Rinda::RingFinger.new(
+        @ring_server_host, @ring_server_port)
       @ring_server = @ring_server.lookup_ring_any
-      @log.info("Ring server found on : druby://#{@host}:#{@ring_server_port}")
+      @log.info("Ring server found on : druby://#{@ring_server_host}:#{@ring_server_port}")
     end
 
     ##
