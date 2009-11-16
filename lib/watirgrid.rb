@@ -19,8 +19,6 @@ module Watir
       @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
       @renewer = params[:renewer] || Rinda::SimpleRenewer.new
 
-      @quantity = params[:quantity]
-
       logfile = params[:logfile] || STDOUT
       @log  = Logger.new(logfile, 'daily')
       @log.level = params[:loglevel] || Logger::ERROR
@@ -43,6 +41,7 @@ module Watir
       @browsers.each do |browser|
         threads << Thread.new do 
           id += 1
+          @log.debug(browser)
           # yields a browser object, ID, hostname, architecture, type
           yield(browser[2].new_browser, id, browser[4],browser[5],browser[6])
         end
@@ -89,7 +88,11 @@ module Watir
     ##
     # Get all tuple spaces on ringserver
     def get_tuples(params = {})
-      quantity = params[:quantity] || -1
+      if (params[:quantity].nil? or params[:quantity] == 0) then
+        quantity = -1 
+      else
+        quantity = params[:quantity] - 1
+      end
       architecture = params[:architecture] || nil
       browser_type = params[:browser_type] || nil
       
@@ -105,17 +108,16 @@ module Watir
 
       @log.info("Found #{@tuples.size} tuples.")
       if @tuples.size > 0 then
-        @tuples[1..quantity].each do |tuple|
+         @log.debug("Iterating from 0 to #{quantity}")
+        @tuples[0..quantity].each do |tuple|
           @log.debug("Iterating through #{@tuples.size} tuples")
           hostname = tuple[4]
           if params[:hostnames] then
-            @log.debug(tuple)
             if params[:hostnames][hostname] then
               @browsers << tuple
               @ring_server.take(tuple)if params[:take_all] == true
             end
           else
-            @log.debug(tuple)
             @browsers << tuple
             @ring_server.take(tuple)if params[:take_all] == true
           end
@@ -123,6 +125,7 @@ module Watir
       else
         @browsers
       end
+      @browsers
     end
   end
 

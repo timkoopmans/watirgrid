@@ -17,7 +17,7 @@ describe 'WatirGrid' do
   it 'should return how many browsers are available in the tuplespace' do
     browsers = Watir::Grid.new(:ring_server_port => 12351)
     browsers.start(:read_all => true)
-    browsers.size.should == 4
+    browsers.size.should == 5
   end
 
   it 'should read any 2 browsers in the tuplespace' do
@@ -35,7 +35,7 @@ describe 'WatirGrid' do
   it 'should take all browsers remaining in tuplespace' do
     browsers = Watir::Grid.new(:ring_server_port => 12351)
     browsers.start(:take_all => true)
-    browsers.size.should == 3
+    browsers.size.should == 4
   end
 
   it 'should find no more browsers in the tuplespace' do
