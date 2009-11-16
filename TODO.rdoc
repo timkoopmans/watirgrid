@@ -1,5 +1,5 @@
 == Docs
-better instructions in general
+Better instructions in general
 
 == Providers
 Remote registration of providers
