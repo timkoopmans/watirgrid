@@ -106,14 +106,16 @@ module Watir
       @log.info("Found #{@tuples.size} tuples.")
       if @tuples.size > 0 then
         @tuples[1..quantity].each do |tuple|
+          @log.debug("Iterating through #{@tuples.size} tuples")
           hostname = tuple[4]
           if params[:hostnames] then
-            @log.debug(tuple[4])
+            @log.debug(tuple)
             if params[:hostnames][hostname] then
               @browsers << tuple
               @ring_server.take(tuple)if params[:take_all] == true
             end
           else
+            @log.debug(tuple)
             @browsers << tuple
             @ring_server.take(tuple)if params[:take_all] == true
           end

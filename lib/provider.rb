@@ -87,7 +87,6 @@ class Provider
     @log.level = params[:loglevel] || Logger::INFO
     @log.datetime_format = "%Y-%m-%d %H:%M:%S "   
 
-    @log.debug("DRB Server Port #{@drb_server_port}\nRing Server Port #{@ring_server_port}")
   end  
 
   ##
