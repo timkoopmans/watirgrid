@@ -121,6 +121,7 @@ class Provider
               ]   
 
     # locate the Rinda Ring Server via a UDP broadcast
+    @log.debug("Attempting to find ring server on : druby://#{@ring_server_host}:#{@ring_server_port}")
     ring_server = Rinda::RingFinger.new(@ring_server_host, @ring_server_port)
     ring_server = ring_server.lookup_ring_any
     @log.info("Ring server found on  : druby://#{@ring_server_host}:#{@ring_server_port}")

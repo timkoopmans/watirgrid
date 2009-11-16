@@ -52,7 +52,7 @@ controller = Controller.new(
   :drb_server_port  => options[:drb_server_port]  || 11235, 
   :ring_server_host => options[:ring_server_host], 
   :ring_server_port => options[:ring_server_port] || 12358,
-  :acls => options[:acls] || %w{ deny all allow 127.0.0.1 },
+  :acls => options[:acls] || %w{ allow all },
   :loglevel => options[:loglevel]
 )
 controller.start

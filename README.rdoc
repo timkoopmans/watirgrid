@@ -1,55 +1,77 @@
-= watirgrid
+= WatirGrid
 
 WatirGrid allows for distributed testing across a grid network using Watir.
 
-Basic instructions are:
+== Getting Started
+This gem is hosted on Gemcutter. Gemcutter is the next generation of gem hosting for the Ruby community. To get started:
+  gem install gemcutter
+  gem tumble
+  
+Then to install WatirGrid:
+  gem install watirgrid
+
+=== The Basics
+WatirGrid is built on Rinda which implements the Linda distributed computing paradigm in Ruby. According to Wikipedia: “Linda is a model of coordination and communication among several parallel processes operating upon objects stored in and retrieved from shared, virtual, associative memory.”
+
+In other words, WatirGrid allows multiple parallel processes to *_provide_* remote Watir objects in the form of tuple spaces across a grid network. This grid network is *_controlled_* by a ring server.
+
+==== Key Terminology
+The *controller* implements a repository of tuples (tuple space) that can be accessed concurrently. The controller hosts the *ring* *server* which advertises these tuples across a grid network. Typically you will host one controller on a central machine.
+
+The *providers* make remote Watir objects available to the tuple space hosted by the *ring* *server*. Typically you will host one or many providers on your grid network, for example, each PC may become a single provider of a Watir tuple in the form of an Internet Explorer, Firefox or Safari browser object.
+
+=== Simple Example
 
 Pick a server to host the 'controller' for the ring server and execute the following:
-  $ controller -l INFO
+  $ controller
 
 This should find your external facing IP and start the corresponding DRb and Ring Servers:
-  DRb server started on : druby://192.168.1.105:11235
-  Ring server started on: druby://192.168.1.105:12358
+  DRb server started on : druby://143.238.105.61:11235
+  Ring server started on: druby://143.238.105.61:12358
 
 On each client PC, host the 'provider' for the distributed (DRb) Watir objects
-  $  provider -l INFO
+  $  provider
 
 This should find the recently started Ring Server and register a tuple for the Watir object:
-  DRb server started on : druby://192.168.1.105:64864
-  New tuple registered  : druby://192.168.1.105:12358
+  DRb server started on : druby://143.238.105.61:11236
+  Ring server found on  : druby://143.238.105.61:12358
+  New tuple registered  : druby://143.238.105.61:12358
 
 You will now be able to execute commands across remote browsers on your grid network.
 
-Check the watirgid_spec.rb for some examples ...
-
 e.g.
-  browsers = Watir::Grid.new(:ring_server_port => 12351)
-	browsers.start(:quantity => 2, :read_all => true)
-	browsers.size.should == 2
-	browsers.each do |browser, browser_id|
+  browsers = Watir::Grid.new(:ring_server_port => 12358)
+  browsers.start(:quantity => 1, :read_all => true)
+  browsers.size.should == 1
+  browsers.each do |browser, browser_id|
     browser.goto("http://www.google.com")
     browser.text_field(:name, 'q').set("watirgrid")
     browser.button(:name, "btnI").click
   end
 
-For more help see:
+You may wish to host the controller and providers on different machines in a real scenario. You can specify things like server hostnames, ports and access control lists for each of the different types of servers. For more help see:
   $  controller -h
   Usage: controller [options]
   Specific options:
-    -d, --drb-server-port PORT       Specify DRb Server port to listen on
-    -r, --ring-server-port PORT      Specify Ring Server port to listen on
-    -l, --log-level LEVEL            Specify log level {DEBUG|INFO|ERROR}
-    -h, --help                       Show this message
-    
-  $  ./provider -h
+      -H, --drb-server-host HOST       Specify DRb Server interface to host on
+      -d, --drb-server-port PORT       Specify DRb Server port to listen on
+      -h, --ring-server-host HOST      Specify Ring Server interface to host on
+      -r, --ring-server-port PORT      Specify Ring Server port to listen on
+      -a, --access-control-list ACLS   Specify a comma separated Access Control List
+      -l, --log-level LEVEL            Specify log level {DEBUG|INFO|ERROR}
+          --help                       Show this message
+
+  $  provider --help
   Usage: provider [options]
   Specific options:
-    -r, --ring-server-port PORT      Specify Ring Server port to broadcast on
-    -b, --browser-type TYPE          Specify browser type to register {ie|firefox|safari}
-    -l, --log-level LEVEL            Specify log level {DEBUG|INFO|ERROR}
-    -h, --help                       Show this message
-  
-I'll update the wiki soon'ish!
+      -H, --drb-server-host HOST       Specify DRb Server interface to host on
+      -d, --drb-server-port PORT       Specify DRb Server port to listen on
+      -h, --ring-server-host HOST      Specify Ring Server host to connect to
+      -r, --ring-server-port PORT      Specify Ring Server port to broadcast on
+      -b, --browser-type TYPE          Specify browser type to register {ie|firefox|safari}
+      -a, --access-control-list ACLS   Specify a comma separated Access Control List
+      -l, --log-level LEVEL            Specify log level {DEBUG|INFO|ERROR}
+          --help                       Show this message                  
 
 == Copyright
 

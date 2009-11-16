@@ -57,7 +57,7 @@ provider = Provider.new(
   :ring_server_host => options[:ring_server_host],
   :ring_server_port => options[:ring_server_port] || 12358,
   :browser_type => options[:browser_type] || nil,
-  :acls => options[:acls] || %w{ deny all allow 127.0.0.1 },
+  :acls => options[:acls] || %w{ allow all },
   :loglevel => options[:loglevel])
 provider.start
 DRb.thread.join
