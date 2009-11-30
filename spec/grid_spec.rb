@@ -112,10 +112,10 @@ describe 'WatirGrid' do
     threads = []
     @browsers.each do |browser|
       threads << Thread.new do 
-        browser[4].should == `hostname`.strip
-        browser[5].should == Config::CONFIG['arch']
-        browser[6].should == 'safari'
-        b = browser[2].new_browser
+        browser[:hostname].should == `hostname`.strip
+        browser[:architecture].should == Config::CONFIG['arch']
+        browser[:browser_type].should == 'safari'
+        b = browser[:object].new_browser
         b.goto("http://www.google.com")
         b.text_field(:name, 'q').set("watirgrid")
         b.button(:name, "btnI").click

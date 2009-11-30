@@ -98,11 +98,11 @@ module Watir
           hostname = tuple[4]
           if params[:hostnames] then
             if params[:hostnames][hostname] then
-              @browsers << tuple
+              @browsers << tuple_to_hash(tuple)
               @ring_server.take(tuple)if params[:take_all] == true
             end
           else
-            @browsers << tuple
+            @browsers << tuple_to_hash(tuple)
             @ring_server.take(tuple)if params[:take_all] == true
           end
         end
@@ -110,6 +110,20 @@ module Watir
         @browsers
       end
       @browsers
+    end
+    
+    ##
+    # Convert tuple into a hash for easier handling
+    def tuple_to_hash(tuple)
+      tuple_hash = {}
+      tuple_hash[:name]         = tuple[0]
+      tuple_hash[:class]        = tuple[1]
+      tuple_hash[:object]       = tuple[2]
+      tuple_hash[:description]  = tuple[3]
+      tuple_hash[:hostname]     = tuple[4]
+      tuple_hash[:architecture] = tuple[5]
+      tuple_hash[:browser_type] = tuple[6]
+      tuple_hash
     end
   end
 

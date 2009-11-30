@@ -8,7 +8,7 @@ browsers = Watir::Grid.new(:ring_server_port => 12358,
 threads = []
 @browsers.each do |browser|
   threads << Thread.new do 
-    b = browser[2].new_browser
+    b = browser[:object].new_browser
     b.goto("http://www.google.com")
     b.text_field(:name, 'q').set("watirgrid")
     b.button(:name, "btnI").click
