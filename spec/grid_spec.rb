@@ -107,16 +107,21 @@ describe 'WatirGrid' do
 
   it 'should take the last browser and execute some watir commands' do
     browsers = Watir::Grid.new(:ring_server_port => 12351)
-    browsers.start(:quantity => 1,
+    @browsers = browsers.start(:quantity => 1,
       :take_all => true)
-      browsers.each do |browser, browser_id, hostname, arch, type|
-        browser_id.should == 1
-        hostname.should == `hostname`.strip
-        arch.should == Config::CONFIG['arch']
-        type.should == 'safari'
-        browser.goto(
-          "http://localhost:4567/load/#{browser_id}/#{browser.object_id}")
+    threads = []
+    @browsers.each do |browser|
+      threads << Thread.new do 
+        browser[4].should == `hostname`.strip
+        browser[5].should == Config::CONFIG['arch']
+        browser[6].should == 'safari'
+        b = browser[2].new_browser
+        b.goto("http://www.google.com")
+        b.text_field(:name, 'q').set("watirgrid")
+        b.button(:name, "btnI").click
       end
+    end
+    threads.each {|thread| thread.join}
     browsers.size.should == 1
   end
 

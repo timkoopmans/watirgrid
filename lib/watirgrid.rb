@@ -34,22 +34,6 @@ module Watir
     end
 
     ##
-    # Yield a browser object when iterating over the grid of browsers
-    def each
-      threads = []
-      id = 0
-      @browsers.each do |browser|
-        threads << Thread.new do 
-          id += 1
-          @log.debug(browser)
-          # yields a browser object, ID, hostname, architecture, type
-          yield(browser[2].new_browser, id, browser[4],browser[5],browser[6])
-        end
-      end
-      threads.each {|thread| thread.join}
-    end
-
-    ##
     # Return the size (quantity) of browsers started on the grid
     def size
       @browsers.size
@@ -107,7 +91,7 @@ module Watir
         browser_type])
 
       @log.info("Found #{@tuples.size} tuples.")
-      if @tuples.size > 0 then
+      if @tuples.size > -1 then
          @log.debug("Iterating from 0 to #{quantity}")
         @tuples[0..quantity].each do |tuple|
           @log.debug("Iterating through #{@tuples.size} tuples")

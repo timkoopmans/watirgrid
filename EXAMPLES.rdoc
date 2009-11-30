@@ -92,12 +92,17 @@ Watir has been extended with a Grid class that can be used as follows:
   require 'watirgrid'
 
   browsers = Watir::Grid.new(:ring_server_port => 12358)
-  browsers.start(:quantity => 1, :read_all => true, :browser_type => 'ie')
-  browsers.each do |browser, browser_id, hostname, arch, type|
-    browser.goto("http://www.google.com")
-    browser.text_field(:name, 'q').set("watirgrid")
-    browser.button(:name, "btnI").click
+  @browsers = browsers.start(:quantity => 1, :read_all => true, :browser_type => 'ie')
+  threads = []
+  @browsers.each do |browser|
+    threads << Thread.new do 
+      b = browser[2].new_browser
+      b.goto("http://www.google.com")
+      b.text_field(:name, 'q').set("watirgrid")
+      b.button(:name, "btnI").click
+    end
   end
+  threads.each {|thread| thread.join}
 
 Stepping through this example we first instantiate a browsers object, specifying which ring server port to broadcast on when looking for available providers:
   browsers = Watir::Grid.new(:ring_server_port => 12358)
