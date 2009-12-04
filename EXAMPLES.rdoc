@@ -91,10 +91,10 @@ Watir has been extended with a Grid class that can be used as follows:
   require 'rubygems'
   require 'watirgrid'
 
-  browsers = Watir::Grid.new(:ring_server_port => 12358)
-  @browsers = browsers.start(:quantity => 1, :read_all => true, :browser_type => 'ie')
+  grid = Watir::Grid.new(:ring_server_port => 12358)
+  grid.start(:quantity => 1, :read_all => true, :browser_type => 'ie')
   threads = []
-  @browsers.each do |browser|
+  grid.browsers.each do |browser|
     threads << Thread.new do 
       b = browser[:object].new_browser
       b.goto("http://www.google.com")
@@ -105,13 +105,13 @@ Watir has been extended with a Grid class that can be used as follows:
   threads.each {|thread| thread.join}
 
 Stepping through this example we first instantiate a browsers object, specifying which ring server port to broadcast on when looking for available providers:
-  browsers = Watir::Grid.new(:ring_server_port => 12358)
+  grid = Watir::Grid.new(:ring_server_port => 12358)
 
 You may also need to tell the code which host the ring server is on:
-  browsers = Watir::Grid.new(:ring_server_port => 12358, :ring_server_host => 143.238.105.61)
+  grid = Watir::Grid.new(:ring_server_port => 12358, :ring_server_host => 143.238.105.61)
 
 Next we start up the grid, specifying the number of browsers we wish to use, and the method of accessing the tuple space:
-  browsers.start(:quantity => 1, :read_all => true)
+  grid.start(:quantity => 1, :read_all => true)
   
 There are two methods for accessing the tuple space. 
   :read_all => true

@@ -40,10 +40,10 @@ This should find the recently started Ring Server and register a tuple for the W
 You will now be able to execute commands across remote browsers on your grid network.
 
 e.g.
-  browsers = Watir::Grid.new(:ring_server_port => 12358)
-  @browsers = browsers.start(:quantity => 1, :read_all => true)
+  grid = Watir::Grid.new(:ring_server_port => 12358)
+  grid.start(:quantity => 1, :read_all => true)
   threads = []
-  @browsers.each do |browser|
+  grid.browsers.each do |browser|
     threads << Thread.new do 
       b = browser[:object].new_browser
       b.goto("http://www.google.com")
