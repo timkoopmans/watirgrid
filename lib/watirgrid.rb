@@ -23,11 +23,14 @@ module Watir
       @log  = Logger.new(logfile, 'daily')
       @log.level = params[:loglevel] || Logger::ERROR
       @log.datetime_format = "%Y-%m-%d %H:%M:%S "   
+      
+      @browsers = []
+      @tuples = []
     end
 
     ##
     # Start required services
-    def start(params = {})
+    def start(params = {})      
       start_drb_server
       find_ring_server
       get_tuples(params)
@@ -72,15 +75,37 @@ module Watir
     ##
     # Get all tuple spaces on ringserver
     def get_tuples(params = {})
-      if (params[:quantity].nil? or params[:quantity] == 0) then
+      quantity = calculate_quantity(params[:quantity]) 
+      read_tuples(params[:architecture], params[:browser_type])
+      @log.info("Found #{@tuples.size} tuples.")
+      if @tuples.size > -1 then
+        @tuples[0..quantity].each do |tuple|
+          if params[:hostnames]
+            filter_tuple_by_hostname(tuple, params)
+          else
+            add_tuple_to_browsers(tuple)
+            take_tuple(tuple) if params[:take_all] == true
+          end      
+        end
+      end
+    end
+
+    ##
+    # Sets the quantity (upper limit of array) of tuples to retrieve
+    # This is because some users prefer not to specify a zero based
+    # index when asking for n browsers
+    def calculate_quantity(quantity)
+      if (quantity.nil? or quantity == 0) then
         quantity = -1 
       else
-        quantity = params[:quantity] - 1
+        quantity -= 1
       end
-      architecture = params[:architecture] || nil
-      browser_type = params[:browser_type] || nil
-      
-      @browsers = []
+    end
+
+    ##
+    # Read all tuples filtered by architecture and browser type
+    # then populate the tuples accessor
+    def read_tuples(architecture, browser_type)
       @tuples = @ring_server.read_all([
         :name,
         nil, # watir provider
@@ -89,29 +114,30 @@ module Watir
         nil, # hostname
         architecture,
         browser_type])
-
-      @log.info("Found #{@tuples.size} tuples.")
-      if @tuples.size > -1 then
-         @log.debug("Iterating from 0 to #{quantity}")
-        @tuples[0..quantity].each do |tuple|
-          @log.debug("Iterating through #{@tuples.size} tuples")
-          hostname = tuple[4]
-          if params[:hostnames] then
-            if params[:hostnames][hostname] then
-              @browsers << tuple_to_hash(tuple)
-              @ring_server.take(tuple)if params[:take_all] == true
-            end
-          else
-            @browsers << tuple_to_hash(tuple)
-            @ring_server.take(tuple)if params[:take_all] == true
-          end
-        end
-      else
-        @browsers
-      end
-      @browsers
     end
-    
+
+    ##
+    # Filter tuple by hostnames
+    def filter_tuple_by_hostname(tuple, params={})
+      hostname = tuple[4]
+      if (params[:hostnames][hostname]) then
+        add_tuple_to_browsers(tuple)
+        take_tuple(tuple) if params[:take_all] == true
+      end
+    end
+
+    ##
+    # Add a tuple to the browsers accessor
+    def add_tuple_to_browsers(tuple)
+      @browsers <<  tuple_to_hash(tuple)
+    end
+
+    ##
+    # Take a tuple from the tuple space
+    def take_tuple(tuple)
+      @ring_server.take(tuple)
+    end
+
     ##
     # Convert tuple into a hash for easier handling
     def tuple_to_hash(tuple)
@@ -125,6 +151,7 @@ module Watir
       tuple_hash[:browser_type] = tuple[6]
       tuple_hash
     end
+  
   end
 
 end
