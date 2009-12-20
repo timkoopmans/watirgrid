@@ -132,16 +132,22 @@ module Watir
       Thread.new {system(bin, "about:blank", "-jssh")}
     end
     
+    ##
+    # Get the logged-in user
     def get_logged_in_user
       %x[whoami].chomp
     end
     
+    ##
+    # Grep for a process (Linux/OSX-with-port only)
     def process_grep(pattern)
       %x[pgrep -l #{pattern}].split(/\n/)
     end
+    
+    def renew_provider
+      self.class.superclass
+    end
   
-       
-
   end
 
 end
@@ -187,7 +193,7 @@ class Provider
 
     # create a service tuple
     @tuple = [
-                :name, 
+                :WatirGrid, 
                 :WatirProvider, 
                 watir_provider, 
                 'A watir provider', 

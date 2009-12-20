@@ -85,7 +85,7 @@ describe 'WatirGrid' do
     grid = Watir::Grid.new(:ring_server_port => 12351, 
     :ring_server_host => '127.0.0.1')
     grid.start(:quantity => 1, 
-      :take_all => true, :architecture => 'universal-darwin10.0')
+      :take_all => true, :architecture => Config::CONFIG['arch'])
     grid.size.should == 1
   end
 
@@ -137,17 +137,11 @@ describe 'WatirGrid' do
     grid.size.should == 1
   end
 
-  it 'should find no more grid in the tuplespace' do
+  it 'should find no more tuples in the tuplespace' do
     grid = Watir::Grid.new(:ring_server_port => 12351, 
     :ring_server_host => '127.0.0.1')
     grid.start(:read_all => true)
     grid.size.should == 0
-  end
-
-  it 'should register a new browser on a remote provider' do
-    pending('provision of remote registration') do
-      grid.size.should == 0
-    end
   end
 
 end

@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe 'WatirGrid' do
+describe 'WatirGrid Utilities' do
   before(:all) do
     controller = Controller.new(
       :ring_server_port => 12351,
@@ -48,7 +48,4 @@ describe 'WatirGrid' do
     @browser[:object].kill_all_browsers
     @browser[:object].get_running_browsers.size.should == 0
   end
-  
-  
-  
 end

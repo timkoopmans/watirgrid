@@ -10,7 +10,7 @@ module Watir
   # and instatiating remote browser objects on nominated providers.
   class Grid
 
-    attr_accessor :drb_server_uri, :ring_server, :browsers
+    attr_accessor :drb_server_uri, :ring_server, :browsers, :tuples
 
     def initialize(params = {})   
       @drb_server_host  = params[:drb_server_host]  || external_interface
@@ -40,6 +40,12 @@ module Watir
     # Return the size (quantity) of browsers started on the grid
     def size
       @browsers.size
+    end
+    
+    ##
+    # Write tuple back to tuplespace when finished using it
+    def release_tuples
+      @tuples.each { |tuple| @ring_server.write(tuple) }
     end
 
     private
@@ -107,7 +113,7 @@ module Watir
     # then populate the tuples accessor
     def read_tuples(architecture, browser_type)
       @tuples = @ring_server.read_all([
-        :name,
+        :WatirGrid,
         nil, # watir provider
         nil, # browser front object
         nil, # provider description
