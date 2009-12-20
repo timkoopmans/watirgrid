@@ -6,7 +6,6 @@ require 'rubygems'
 require 'rinda/ring'
 require 'rinda/tuplespace'
 require 'logger'
-require 'optparse'
 require 'drb/acl'
 
 begin
@@ -15,14 +14,15 @@ rescue LoadError
 end
 
 begin
+    require 'firewatir'
+    include FireWatir
+rescue LoadError
+
+begin
     require 'safariwatir'
 rescue LoadError
 end
 
-begin
-    require 'firewatir'
-    include FireWatir
-rescue LoadError
 end
 
 module Watir
@@ -63,7 +63,84 @@ module Watir
       else
         @browser.new
       end 
-    end 
+    end
+    
+    ##
+    # Get a list of running browsers (optionally specified by browser)
+    # 'iexplore','firefox','firefox-bin','chrome','safari','opera'
+    def get_running_browsers(browser=nil)
+      browsers = browser || \
+        ['iexplore','firefox','firefox-bin','chrome','safari','opera']
+      case Config::CONFIG['arch']
+      when /mswin/
+        %x[tasklist].split(/\s+/).collect { |x| x[/\w+/]} \
+          & browsers.collect { |x| x.downcase }
+      when /linux|darwin/
+        %x[ps -A | grep -v ruby].split(/\/|\s+/).collect { |x| x.downcase} \
+          & browsers
+      end
+    end
+    
+    def get_running_processes
+      %x[ps -A | grep -v ruby].split(/\/|\s+/).collect.uniq
+    end
+    
+    ##
+    # Kill any browser running
+    def kill_all_browsers
+      case Config::CONFIG['arch']
+      when /mswin/
+        browsers = ['iexplore.exe', 'firefox.exe', 'chrome.exe']
+        browsers.each { |browser| %x[taskkill /F /IM #{browser}] } 
+      when /linux/
+        browsers = ['firefox', 'chrome', 'opera']
+        browsers.each { |browser| %x[killall -r #{browser}] } 
+      when /darwin/
+        browsers = ['firefox-bin', 'Chrome', 'Safari']
+        browsers.each { |browser| %x[killall -m #{browser}] } 
+      end
+    end
+    
+    ##
+    # Kill all browsers specified by browser name
+    # Windows: 'iexplore.exe', 'firefox.exe', 'chrome.exe'
+    # Linux: 'firefox', 'chrome', 'opera'
+    # OSX: 'firefox-bin', 'Chrome', 'Safari'
+    def kill_browser(browser)
+      case Config::CONFIG['arch']
+      when /mswin/
+        %x[taskkill /F /IM #{browser}]
+      when /linux/
+        %x[killall -r #{browser}]
+      when /darwin/
+        %x[killall -m #{browser}]
+      end
+    end
+    
+    ##
+    # Start firefox (with an optional bin path) using the -jssh extension
+    def start_firefox_jssh(path=nil)
+      case Config::CONFIG['arch']
+      when /mswin/
+        bin = path || "C:/Program Files/Mozilla Firefox/firefox.exe"
+      when /linux/
+        bin = path || "/usr/bin/firefox"
+      when /darwin/
+        bin = path || "/Applications/Firefox.app/Contents/MacOS/firefox-bin" 
+      end      
+      # fork off and die!
+      Thread.new {system(bin, "about:blank", "-jssh")}
+    end
+    
+    def get_logged_in_user
+      %x[whoami].chomp
+    end
+    
+    def process_grep(pattern)
+      %x[pgrep -l #{pattern}].split(/\n/)
+    end
+  
+       
 
   end
 
@@ -148,7 +225,7 @@ class Provider
   # Get the external facing interface for this server  
   def external_interface    
     begin
-      UDPSocket.open {|s| s.connect('watir.com', 1); s.addr.last }      
+      UDPSocket.open {|s| s.connect('ping.watirgrid.com', 1); s.addr.last }      
     rescue
       '127.0.0.1'
     end

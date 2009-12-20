@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'controller'
 require 'provider'
+require 'optparse'
 
 options = {}
 OptionParser.new do |opts|

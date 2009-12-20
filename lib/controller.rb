@@ -94,7 +94,7 @@ class Controller
   # Get the external facing interface for this server  
   def external_interface    
     begin
-      UDPSocket.open {|s| s.connect('watir.com', 1); s.addr.last }      
+      UDPSocket.open {|s| s.connect('ping.watirgrid.com', 1); s.addr.last }      
     rescue
       '127.0.0.1'
     end
