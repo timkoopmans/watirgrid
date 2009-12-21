@@ -15,7 +15,6 @@ end
 
 begin
     require 'firewatir'
-    include FireWatir
 rescue LoadError
 
 begin
