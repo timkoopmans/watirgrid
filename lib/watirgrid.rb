@@ -82,7 +82,7 @@ module Watir
     # Get all tuple spaces on ringserver
     def get_tuples(params = {})
       quantity = calculate_quantity(params[:quantity]) 
-      read_tuples(params[:architecture], params[:browser_type])
+      read_tuples(params)
       @log.info("Found #{@tuples.size} tuples.")
       if @tuples.size > -1 then
         @tuples[0..quantity].each do |tuple|
@@ -111,15 +111,17 @@ module Watir
     ##
     # Read all tuples filtered by architecture and browser type
     # then populate the tuples accessor
-    def read_tuples(architecture, browser_type)
+    def read_tuples(params={})
       @tuples = @ring_server.read_all([
         :WatirGrid,
         nil, # watir provider
         nil, # browser front object
         nil, # provider description
         nil, # hostname
-        architecture,
-        browser_type])
+        params[:architecture],
+        params[:browser_type],
+        params[:uuid]
+        ])
     end
 
     ##
@@ -155,6 +157,7 @@ module Watir
       tuple_hash[:hostname]     = tuple[4]
       tuple_hash[:architecture] = tuple[5]
       tuple_hash[:browser_type] = tuple[6]
+      tuple_hash[:uuid]         = tuple[7]
       tuple_hash
     end
   

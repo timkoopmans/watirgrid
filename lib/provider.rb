@@ -7,6 +7,7 @@ require 'rinda/ring'
 require 'rinda/tuplespace'
 require 'logger'
 require 'drb/acl'
+require 'uuid'
 
 begin
     require 'watir'
@@ -198,7 +199,8 @@ class Provider
                 'A watir provider', 
                 hostname,
                 architecture,
-                @browser_type
+                @browser_type,
+                UUID.new.generate
               ]   
 
     # locate the Rinda Ring Server via a UDP broadcast
