@@ -9,22 +9,6 @@ require 'logger'
 require 'drb/acl'
 require 'uuid'
 
-begin
-    require 'watir'
-rescue LoadError
-end
-
-begin
-    require 'firewatir'
-rescue LoadError
-
-begin
-    require 'safariwatir'
-rescue LoadError
-end
-
-end
-
 module Watir
   
   ##
@@ -41,28 +25,30 @@ module Watir
       browser = (browser || 'tmp').downcase.to_sym  
       case browser
         when :safari
+					require 'safariwatir'
           @browser = Watir::Safari
         when :firefox
+					require 'firewatir'
           @browser = FireWatir::Firefox 
         when :ie
+					require 'watir'
           @browser = Watir::IE
+				when :webdriver
+					require 'watir-webdriver'
+          @browser = Watir::Browser
         else
           @browser = find_supported_browser
       end    
     end
 
-    def find_supported_browser
-      if Watir::IE then return Watir::IE end
-      if FireWatir::Firefox then return FireWatir::Firefox end
-      if Watir::Safari then return Watir::Safari end
-    end
+    #~ def find_supported_browser
+      #~ if Watir::IE then return Watir::IE end
+      #~ if FireWatir::Firefox then return FireWatir::Firefox end
+      #~ if Watir::Safari then return Watir::Safari end
+    #~ end
 
-    def new_browser   
-      if @browser.nil?
-        find_supported_browser.new
-      else
-        @browser.new
-      end 
+    def new_browser(webdriver_browser_type = nil)   
+			@browser.new(webdriver_browser_type)
     end
     
     ##

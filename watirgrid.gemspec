@@ -5,13 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{watirgrid}
-  s.version = ""
+  s.version = "0.0.8.pre"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tim Koopmans"]
-  s.date = %q{2009-11-05}
+  s.date = %q{2010-10-11}
   s.description = %q{WatirGrid allows for distributed testing across a grid network using Watir.}
   s.email = %q{tim.koops@gmail.com}
+  s.executables = ["controller", "provider"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.rdoc"
@@ -19,35 +20,56 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
+     "EXAMPLES.rdoc",
+     "HISTORY.rdoc",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
+     "bin/controller",
+     "bin/provider",
+     "examples/find_by_uuid.rb",
+     "examples/google.rb",
+     "examples/info.rb",
+     "examples/restart_firefox.rb",
+     "examples/simple.rb",
      "lib/controller.rb",
-     "lib/extend.rb",
      "lib/provider.rb",
      "lib/watirgrid.rb",
+     "spec/grid_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
-     "spec/tuple_spec.rb",
+     "spec/stub.rb",
+     "spec/tuples_spec.rb",
+     "spec/utilities_spec.rb",
      "spec/watirgrid_spec.rb",
      "watirgrid.gemspec"
   ]
   s.homepage = %q{http://github.com/90kts/watirgrid}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{WatirGrid: Web Application Testing in Ruby across a grid network.}
   s.test_files = [
-    "spec/spec_helper.rb",
-     "spec/tuple_spec.rb",
-     "spec/watirgrid_spec.rb"
+    "spec/grid_spec.rb",
+     "spec/spec_helper.rb",
+     "spec/stub.rb",
+     "spec/tuples_spec.rb",
+     "spec/utilities_spec.rb",
+     "spec/watir_spec.rb",
+     "spec/watirgrid_spec.rb",
+     "spec/webdriver_spec.rb",
+     "examples/find_by_uuid.rb",
+     "examples/google.rb",
+     "examples/info.rb",
+     "examples/restart_firefox.rb",
+     "examples/simple.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
     else
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
