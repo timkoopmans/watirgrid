@@ -10,8 +10,8 @@ OptionParser.new do |opts|
   opts.separator ""
   opts.separator "Specific options:"
   opts.on("-H HOST", "--drb-server-host", String, 
-  "Specify DRb Server interface to host on") do |H|
-    options[:drb_server_host] = H || nil
+  "Specify DRb Server interface to host on") do |h|
+    options[:drb_server_host] = h || nil
   end
   opts.on("-d PORT", "--drb-server-port", Integer, 
     "Specify DRb Server port to listen on") do |d|
