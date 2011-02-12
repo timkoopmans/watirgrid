@@ -36,16 +36,8 @@ module Watir
 				when :webdriver
 					require 'watir-webdriver'
           @browser = Watir::Browser
-        else
-          @browser = find_supported_browser
       end    
     end
-
-    #~ def find_supported_browser
-      #~ if Watir::IE then return Watir::IE end
-      #~ if FireWatir::Firefox then return FireWatir::Firefox end
-      #~ if Watir::Safari then return Watir::Safari end
-    #~ end
 
     def new_browser(webdriver_browser_type = nil)   
 			@browser.new(webdriver_browser_type)
