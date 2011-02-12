@@ -2,7 +2,6 @@
 # provider.rb
 # Rinda Ring Provider
 
-require 'rubygems'
 require 'rinda/ring'
 require 'rinda/tuplespace'
 require 'logger'
