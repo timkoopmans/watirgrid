@@ -3,11 +3,7 @@
 WatirGrid allows for distributed testing across a grid network using Watir.
 
 == Getting Started
-This gem is hosted on Gemcutter. Gemcutter is the next generation of gem hosting for the Ruby community. To get started:
-  gem install gemcutter
-  gem tumble
-  
-Then to install WatirGrid:
+To install WatirGrid:
   gem install watirgrid
 
 === The Basics
