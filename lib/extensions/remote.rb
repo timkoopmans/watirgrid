@@ -37,4 +37,3 @@ module Watir
   
   end
 end
-
