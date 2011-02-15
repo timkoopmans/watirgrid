@@ -56,7 +56,7 @@ end
 
 Then /^I should be able to visit ([:\/\w\.]+) using (\w+)$/ do |site, browser_type|
   @grid.browsers.each do |browser|
-    @b = browser[:object].new_browser(browser_type.to_sym)
+    @b = browser[:object].new_browser(browser_type.downcase.to_sym)
     @b.goto(site)
     @b.close
   end

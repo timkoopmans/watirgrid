@@ -13,14 +13,14 @@ Feature: Watirgrid Browsers
     Given I have added 1 WebDriver provider to the controller on port 12351
     When I start a grid using the take_all method on port 12351
     Then I should see 1 provider on the grid
-    And I should be able to visit http://google.com using firefox
+    And I should be able to visit http://google.com using FireFox
 
   @WebDriver-Chrome
   Scenario: Add another provider and take control using Chrome via WebDriver
     Given I have added 1 WebDriver provider to the controller on port 12351
     When I start a grid using the take_all method on port 12351
     Then I should see 1 provider on the grid
-    And I should be able to visit http://google.com using chrome
+    And I should be able to visit http://google.com using Chrome
 
   @SafariWatir
   Scenario: Add another provider and take control using SafariWatir 

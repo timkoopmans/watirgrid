@@ -9,8 +9,8 @@ require 'drb/acl'
 require 'uuid'
 require 'selenium/server'
 include Selenium
-@server = Selenium::Server.new('selenium-server-standalone-2.0b1.jar', :background => true)
-@server.start
+@server = Selenium::Server.new(File.expand_path(File.dirname(__FILE__)) + '/selenium-server-standalone-2.0b1.jar', :background => true)
+@server.start  
 
 module Watir
   class Provider
@@ -29,7 +29,7 @@ module Watir
     end
   
     def new_browser(webdriver_browser_type = nil)
-      if webdriver_browser_type == "htmlunit"   
+      if webdriver_browser_type == :htmlunit 
         capabilities = WebDriver::Remote::Capabilities.htmlunit(:javascript_enabled => true)
         @browser.new(:remote, :url => "http://127.0.0.1:4444/wd/hub", :desired_capabilities => capabilities)
       end
