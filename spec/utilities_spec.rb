@@ -12,8 +12,7 @@ describe 'WatirGrid Utilities' do
         :loglevel => Logger::ERROR, :browser_type => 'safari')
       provider.start
     end
-    grid = Watir::Grid.new(:ring_server_port => 12351, 
-    :ring_server_host => '127.0.0.1')
+    grid = Watir::Grid.new(:ring_server_port => 12351)
     grid.start(:read_all => true)
     @browser = grid.browsers[0]
   end
