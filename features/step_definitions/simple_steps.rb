@@ -22,12 +22,12 @@ Then /^I should have a controller listening on UDP port (\d+)$/ do |port|
   u.connect('127.0.0.1', port.to_i)
 end
 
-Given /^I have added (\d+).+?provider.+?to the controller on port (\d+)$/ do |total, port|
+Given /^I have added (\d+) (\w+) provider.+?to the controller on port (\d+)$/ do |total, browser_type, port|
   1.upto(total.to_i) do
     provider = Provider.new(
       :ring_server_port => port.to_i,
       :ring_server_host => '127.0.0.1', 
-      :loglevel => Logger::ERROR, :browser_type => 'webdriver')
+      :loglevel => Logger::ERROR, :browser_type => browser_type)
     provider.start
   end
 end
