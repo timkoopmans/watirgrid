@@ -2,7 +2,6 @@
 # controller.rb
 # Rinda Ring Server Controlller
 
-require 'rubygems'
 require 'rinda/tuplespace'
 require 'rinda/ring'
 require 'logger'
@@ -101,4 +100,3 @@ class Controller
   end
 
 end
-
