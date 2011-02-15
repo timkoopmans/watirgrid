@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'controller'
 require 'provider'
 
@@ -164,4 +163,3 @@ module Watir
   end
 
 end
-
