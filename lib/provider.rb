@@ -22,7 +22,6 @@ module Watir
 
     def initialize(browser = nil)
       browser = (browser || 'tmp').downcase.to_sym 
-      p browser 
       case browser
         when :safari, :safariwatir
 					require 'safariwatir'
@@ -219,6 +218,4 @@ class Provider
       '127.0.0.1'
     end
   end
-
 end
-
