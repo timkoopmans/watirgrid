@@ -15,15 +15,13 @@ describe 'When taking tuples from the grid' do
   end
 
   it 'should start 1st grid and take all tuples' do
-    grid1 = Watir::Grid.new(:ring_server_port => 12351, 
-    :ring_server_host => '127.0.0.1')
+    grid1 = Watir::Grid.new(:ring_server_port => 12351)
     grid1.start(:take_all => true)
     grid1.size.should == 5
   
     describe 'Then for subsequent grids' do
       it 'should start 2nd grid and confirm there are no more tuples' do
-        grid2 = Watir::Grid.new(:ring_server_port => 12351, 
-        :ring_server_host => '127.0.0.1')
+        grid2 = Watir::Grid.new(:ring_server_port => 12351)
         grid2.start(:take_all => true)
         grid2.size.should == 0
       end
@@ -33,8 +31,7 @@ describe 'When taking tuples from the grid' do
       end
   
       it 'should start 3rd grid and confirm there are tuples available' do
-        grid3 = Watir::Grid.new(:ring_server_port => 12351, 
-        :ring_server_host => '127.0.0.1')
+        grid3 = Watir::Grid.new(:ring_server_port => 12351)
         grid3.start(:take_all => true)
         grid3.size.should == 5
       end  
