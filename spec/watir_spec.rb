@@ -4,6 +4,7 @@ describe 'WatirGrid' do
   before(:all) do
     controller = Controller.new(
       :ring_server_port => 12351,
+      :ring_server_host => '127.0.0.1',
       :loglevel => Logger::ERROR)
     controller.start
     1.upto(1) do 
