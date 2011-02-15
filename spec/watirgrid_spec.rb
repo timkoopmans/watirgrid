@@ -48,4 +48,3 @@ describe Provider do
     @controller.stop
   end
 end
-
