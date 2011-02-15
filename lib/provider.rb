@@ -76,7 +76,6 @@ module Watir
       when /linux/
         browsers = ['firefox', 'chrome', 'opera']
         browsers.each { |browser| %x[killall -r #{browser}] } 
-      when /darwin/
         browsers = ['firefox-bin', 'Chrome', 'Safari']
         browsers.each { |browser| %x[killall -m #{browser}] } 
       end
