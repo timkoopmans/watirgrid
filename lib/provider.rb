@@ -21,15 +21,16 @@ module Watir
     attr_reader :browser
 
     def initialize(browser = nil)
-      browser = (browser || 'tmp').downcase.to_sym  
+      browser = (browser || 'tmp').downcase.to_sym 
+      p browser 
       case browser
-        when :safari
+        when :safari, :safariwatir
 					require 'safariwatir'
           @browser = Watir::Safari
-        when :firefox
+        when :firefox, :firewatir
 					require 'firewatir'
           @browser = FireWatir::Firefox 
-        when :ie
+        when :ie, :watir
 					require 'watir'
           @browser = Watir::IE
 				when :webdriver
@@ -39,7 +40,11 @@ module Watir
     end
 
     def new_browser(webdriver_browser_type = nil)   
-			@browser.new(webdriver_browser_type)
+			if webdriver_browser_type 
+        @browser.new(webdriver_browser_type)
+      else
+        @browser.new
+      end
     end
     
     ##

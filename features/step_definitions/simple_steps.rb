@@ -54,4 +54,18 @@ Then /^if I release the providers on the grid$/ do
   @grid.release_tuples
 end
 
+Then /^I should be able to visit ([:\/\w\.]+) using (\w+)$/ do |site, browser_type|
+  @grid.browsers.each do |browser|
+    @b = browser[:object].new_browser(browser_type.to_sym)
+    @b.goto(site)
+    @b.close
+  end
+end
 
+Then /^I should be able to visit ([:\/\w\.]+)$/ do |site|
+  @grid.browsers.each do |browser|
+    @b = browser[:object].new_browser
+    @b.goto(site)
+    @b.close
+  end
+end
