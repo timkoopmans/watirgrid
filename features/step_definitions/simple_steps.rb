@@ -69,3 +69,24 @@ Then /^I should be able to visit ([:\/\w\.]+)$/ do |site|
     @b.close
   end
 end
+
+When /^I start a grid using the take_all method with browser_type "(\w+)" on port (\d+)$/ do |browser_type, port|
+  @grid = Watir::Grid.new(
+    :ring_server_port => port.to_i, 
+    :ring_server_host => '127.0.0.1',
+    :browser_type => "#{browser_type}" )
+  @grid.start(:take_all => true)
+end
+
+Then /^I should NOT see (\d+) provider on the grid$/ do |total|
+  @grid.size.should == 0 
+end
+
+When /^I start a grid using the take_all method with architecture type "(.+?)" on port (\d+)$/ do |architecture, port|
+  @grid = Watir::Grid.new(
+    :ring_server_port => port.to_i, 
+    :ring_server_host => '127.0.0.1' )
+  @grid.start(
+    :take_all => true,
+    :architecture => "#{architecture}")
+end
