@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'rake'
 
 begin
@@ -10,29 +9,27 @@ begin
     gem.email = "tim.koops@gmail.com"
     gem.homepage = "http://github.com/90kts/watirgrid"
     gem.authors = ["Tim Koopmans"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.version = "0.0.8.pre"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
 require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+desc "Run unit tests"
+Spec::Rake::SpecTask.new('unit_tests_watir') do |t|
+  t.spec_files = FileList['spec/**/grid_spec.rb']
+  t.spec_opts = ["--format", "nested", "-c"]
+  t.fail_on_error = false
 end
 
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
+desc "Run unit tests for WebDriver"
+Spec::Rake::SpecTask.new('unit_tests_webdriver') do |t|
+  t.spec_files = FileList['spec/**/webdriver_spec.rb']
+  t.spec_opts = ["--format", "nested", "-c"]
+  t.fail_on_error = false
 end
 
-task :spec => :check_dependencies
-
-task :default => :spec
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|

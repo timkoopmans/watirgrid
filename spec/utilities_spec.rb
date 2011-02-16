@@ -1,22 +1,26 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe 'WatirGrid Utilities' do
+describe 'Utility Functions for the Grid' do
   before(:all) do
-    controller = Controller.new(
-      :ring_server_port => 12351,
+    @controller = Controller.new(
+      :ring_server_port => 12353,
       :loglevel => Logger::ERROR)
-    controller.start
+    @controller.start
     1.upto(1) do 
       provider = Provider.new(
-        :ring_server_port => 12351, 
+        :ring_server_port => 12353, 
         :loglevel => Logger::ERROR, :browser_type => 'safari')
       provider.start
     end
-    grid = Watir::Grid.new(:ring_server_port => 12351)
+    grid = Watir::Grid.new(:ring_server_port => 12353)
     grid.start(:read_all => true)
     @browser = grid.browsers[0]
   end
   
+  after(:all) do
+    @controller.stop
+  end
+
   it 'should get the logged-in user for the remote provider' do
     @browser[:object].get_logged_in_user.should == `whoami`.chomp
   end
