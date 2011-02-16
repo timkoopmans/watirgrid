@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', 'lib'))
 require 'watirgrid'
 
-# Here as some basic examples in plain Ruby with Watirgrid and WebDriver
+# Here's some basic examples in plain Ruby with Watirgrid and WebDriver
 
 # Start a Controller using defaults
 controller = Controller.new
