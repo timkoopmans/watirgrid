@@ -29,6 +29,7 @@ describe 'Using the Grid with WebDriver' do
         b = browser[:object].new_browser(:firefox)
         b.goto("http://www.google.com")
         b.text_field(:name, 'q').set("watirgrid")
+        b.button(:name, "btnI").click
         b.close
       end
     end
