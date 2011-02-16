@@ -161,6 +161,20 @@ describe 'Using the Grid' do
         "tokyo" => "127.0.0.1"})
     grid.size.should == 0
   end
+
+  it 'should get the UUID of the last provider on the grid' do
+    grid = Watir::Grid.new(:ring_server_port => 12357)
+    grid.start(:read_all => true)
+    grid.browsers.each do |browser|
+      @uuid = browser[:uuid]
+    end
+  end
+
+  it 'should be able to find a provider by its UUID on the grid' do
+    grid = Watir::Grid.new(:ring_server_port => 12357)
+    grid.start(:read_all => true, :uuid => @uuid)
+    grid.size.should == 1
+  end
   
   it 'should take the last provider on the grid and execute some Watir code in Safari' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
