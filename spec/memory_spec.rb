@@ -16,7 +16,7 @@ end
 
 describe 'Profile memory of grid elements' do
 
-  it 'Footprint of single contoller should be less than 100KB' do
+  it 'Footprint of single controller should be less than 100KB' do
     result = RubyProf.profile do
       controller = Controller.new(:loglevel => Logger::ERROR)
       controller.start
@@ -51,5 +51,44 @@ describe 'Profile memory of grid elements' do
       end
     end
     total_memory_kilobytes(result).should < 20*1024
+  end
+end
+
+describe 'Memory profile of 1024byte string' do
+  it 'Should evaluate to 1KB of memory' do
+    result = RubyProf.profile do
+      x = "x"*1024
+    end
+    total_memory_kilobytes(result).should < 1024
+  end
+end
+
+describe 'Memory profile when instantiating a grid' do
+  it 'Footprint of 1 controller + 1 provder when grid is started' do
+    result = RubyProf.profile do
+      controller = Controller.new(:loglevel => Logger::ERROR)
+      controller.start
+      provider = Provider.new(:loglevel => Logger::ERROR, :browser_type => 'webdriver')
+      provider.start
+      grid = Watir::Grid.new
+      grid.start
+    end
+    total_memory_kilobytes(result)
+  end
+end
+
+describe 'Memory profile when instantiating a grid and driving a browser' do
+  it 'Footprint of 1 controller + 1 provder when grid is started, with firefox' do
+    result = RubyProf.profile do
+      controller = Controller.new(:loglevel => Logger::ERROR)
+      controller.start
+      provider = Provider.new(:loglevel => Logger::ERROR, :browser_type => 'webdriver')
+      provider.start
+      grid = Watir::Grid.new
+      grid.start
+      b = grid.browsers[0][:object].new_browser(:firefox)
+      b.goto 'http://google.com'
+    end
+    total_memory_kilobytes(result)
   end
 end
