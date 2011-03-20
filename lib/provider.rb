@@ -17,7 +17,7 @@ module Watir
   class Provider
 
     include DRbUndumped # all objects will be proxied, not copied
-
+    $SAFE = 1 # prevent eval of malicious code on server
     attr_reader :browser
 
     def initialize(browser = nil)
