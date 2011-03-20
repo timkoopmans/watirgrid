@@ -8,6 +8,7 @@ require 'logger'
 require 'optparse'
 require 'drb/acl'
 $SAFE = 1 # prevent eval of malicious code on server
+$LOAD_PATH.each {|p| p.untaint}
 
 module Rinda
 

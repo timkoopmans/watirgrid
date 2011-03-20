@@ -8,6 +8,7 @@ require 'logger'
 require 'drb/acl'
 require 'uuid'
 $SAFE = 1 # prevent eval of malicious code on server
+$LOAD_PATH.each {|p| p.untaint}
 
 module Watir
   
@@ -21,7 +22,7 @@ module Watir
     attr_reader :browser
 
     def initialize(browser = nil)
-      browser = (browser || 'tmp').downcase.to_sym 
+      browser = (browser || 'tmp').downcase.to_sym
       case browser
         when :safari, :safariwatir
 					require 'safariwatir'
@@ -35,7 +36,7 @@ module Watir
 				when :webdriver
 					require 'watir-webdriver'
           @browser = Watir::Browser
-      end    
+      end
     end
 
     def new_browser(webdriver_browser_type = nil)   
