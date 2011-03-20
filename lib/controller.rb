@@ -7,6 +7,7 @@ require 'rinda/ring'
 require 'logger'
 require 'optparse'
 require 'drb/acl'
+$SAFE = 1 # prevent eval of malicious code on server
 
 module Rinda
 
