@@ -7,7 +7,7 @@ require 'rinda/ring'
 require 'logger'
 require 'optparse'
 require 'drb/acl'
-$SAFE = 1 # prevent eval of malicious code on server
+$SAFE = 0 # prevent eval of malicious code on server
 $LOAD_PATH.each {|p| p.untaint}
 
 module Rinda
@@ -28,7 +28,9 @@ module Rinda
       @w_service = write_service
       @r_service = reply_service
     end
+
   end
+
 end
 
 class Controller
@@ -94,6 +96,7 @@ class Controller
   ##
   # Get the external facing interface for this server  
   def external_interface    
+   #TODO this is problematic on NAT'd addresses, need a better way to determine public facing IP
     begin
       UDPSocket.open {|s| s.connect('ping.watirgrid.com', 1); s.addr.last }      
     rescue

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{watirgrid}
-  s.version = "0.0.9"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tim Koopmans"]
-  s.date = %q{2011-02-16}
+  s.date = %q{2011-04-02}
   s.description = %q{WatirGrid allows for distributed testing across a grid network using Watir.}
   s.email = %q{tim.koops@gmail.com}
   s.executables = ["controller", "provider"]
@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
      "lib/watirgrid.rb",
      "logo.png",
      "spec/grid_spec.rb",
+     "spec/memory_spec.rb",
      "spec/spec_helper.rb",
      "spec/utilities_spec.rb",
      "spec/webdriver_remote_spec.rb",
@@ -51,6 +52,7 @@ Gem::Specification.new do |s|
   s.summary = %q{WatirGrid: Web Application Testing in Ruby across a grid network.}
   s.test_files = [
     "spec/grid_spec.rb",
+     "spec/memory_spec.rb",
      "spec/spec_helper.rb",
      "spec/utilities_spec.rb",
      "spec/webdriver_remote_spec.rb",

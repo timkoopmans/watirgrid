@@ -7,7 +7,7 @@ require 'rinda/tuplespace'
 require 'logger'
 require 'drb/acl'
 require 'uuid'
-$SAFE = 1 # prevent eval of malicious code on server
+$SAFE = 0 # prevent eval of malicious code on server
 $LOAD_PATH.each {|p| p.untaint}
 
 module Watir
