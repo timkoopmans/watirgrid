@@ -16,7 +16,7 @@ rescue LoadError
 end
 
 require 'spec/rake/spectask'
-desc "Run unit tests"
+desc "Run unit tests for Watir, FireWatir and SafariWatir"
 Spec::Rake::SpecTask.new('unit_tests_watir') do |t|
   t.spec_files = FileList['spec/**/grid_spec.rb']
   t.spec_opts = ["--format", "nested", "-c"]
