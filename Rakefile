@@ -9,7 +9,7 @@ begin
     gem.email = "tim.koops@gmail.com"
     gem.homepage = "http://github.com/90kts/watirgrid"
     gem.authors = ["Tim Koopmans"]
-    gem.version = "1.0.0"
+    gem.version = "1.0.1"
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
