@@ -5,9 +5,9 @@ describe 'Using the Grid with WebDriver' do
       :ring_server_port => 12356,
       :loglevel => Logger::ERROR)
     @controller.start
-    1.upto(1) do 
+    1.upto(1) do
       provider = Provider.new(
-        :ring_server_port => 12356, 
+        :ring_server_port => 12356,
         :loglevel => Logger::ERROR, :browser_type => 'webdriver')
       provider.start
     end
@@ -22,7 +22,7 @@ describe 'Using the Grid with WebDriver' do
     grid.start(:quantity => 1, :take_all => true)
     threads = []
     grid.browsers.each do |browser|
-      threads << Thread.new do 
+      threads << Thread.new do
         browser[:hostname].should == `hostname`.strip
         browser[:architecture].should == Config::CONFIG['arch']
         browser[:browser_type].should == 'webdriver'

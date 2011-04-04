@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby 
+#!/usr/bin/env ruby
 # controller.rb
 # Rinda Ring Server Controlller
 
@@ -7,8 +7,6 @@ require 'rinda/ring'
 require 'logger'
 require 'optparse'
 require 'drb/acl'
-$SAFE = 0 # prevent eval of malicious code on server
-$LOAD_PATH.each {|p| p.untaint}
 
 module Rinda
 
@@ -38,7 +36,7 @@ class Controller
   attr_accessor :drb_server_uri, :ring_server_uri
 
   def initialize(params = {})
-    @drb_server_host  = params[:drb_server_host]  || external_interface    
+    @drb_server_host  = params[:drb_server_host]  || external_interface
     @drb_server_port  = params[:drb_server_port]  || 0
     @ring_server_host = params[:ring_server_host] || external_interface
     @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
@@ -47,14 +45,14 @@ class Controller
     logfile = params[:logfile] || STDOUT
     @log  = Logger.new(logfile, 'daily')
     @log.level = params[:loglevel] || Logger::INFO
-    @log.datetime_format = "%Y-%m-%d %H:%M:%S "    
+    @log.datetime_format = "%Y-%m-%d %H:%M:%S "
 
     @log.debug("DRB Server Port #{@drb_server_port}\nRing Server Port #{@ring_server_port}")
   end
 
   ##
   # Start a new tuplespace on the ring server
-  def start  
+  def start
     # create a parent Tuple Space
     tuple_space = Rinda::TupleSpace.new
 
@@ -63,42 +61,41 @@ class Controller
 
     # start the DRb Server
     drb_server = DRb.start_service(
-      "druby://#{@drb_server_host}:#{@drb_server_port}", tuple_space)  
+      "druby://#{@drb_server_host}:#{@drb_server_port}", tuple_space)
 
     # obtain DRb Server uri
     @drb_server_uri = drb_server.uri
     @log.info("DRb server started on : #{@drb_server_uri}")
 
     # start the Ring Server
-    ring_server = Rinda::RingServer.new(tuple_space, 
+    ring_server = Rinda::RingServer.new(tuple_space,
       @ring_server_host, @ring_server_port)
 
     # obtain Ring Server uri
-    @ring_server_uri = ring_server.uri  
+    @ring_server_uri = ring_server.uri
     @log.info("Ring server started on: #{@ring_server_uri}")
 
     # abort all threads on an exception
     Thread.abort_on_exception = true
 
     # wait for explicit stop via ctrl-c
-    DRb.thread.join if __FILE__ == $0   
+    DRb.thread.join if __FILE__ == $0
   end
 
   ##
   # Stop the controller by shutting down the DRb service
-  def stop    
+  def stop
     DRb.stop_service
-    @log.info("DRb server stopped on: #{@drb_server_uri}")    
+    @log.info("DRb server stopped on: #{@drb_server_uri}")
   end
 
   private
 
   ##
-  # Get the external facing interface for this server  
-  def external_interface    
-   #TODO this is problematic on NAT'd addresses, need a better way to determine public facing IP
+  # Get the external facing interface for this server
+  def external_interface
     begin
-      UDPSocket.open {|s| s.connect('ping.watirgrid.com', 1); s.addr.last }      
+      UDPSocket.open {|s| s.connect('ping.watirgrid.com', 1); s.addr.last }
     rescue
       '127.0.0.1'
     end

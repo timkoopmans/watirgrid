@@ -10,7 +10,7 @@ describe 'Starting and Stopping Controllers on the Grid' do
 
   it 'should start a DRb and Ring Server on a specified interface' do
     controller = Controller.new(
-      :drb_server_host => '127.0.0.1', 
+      :drb_server_host => '127.0.0.1',
       :ring_server_host => '127.0.0.1',
       :loglevel => Logger::ERROR)
     controller.start
@@ -20,7 +20,7 @@ describe 'Starting and Stopping Controllers on the Grid' do
 
   it 'should start a DRb and Ring Server on specified ports' do
     controller = Controller.new(
-      :drb_server_port => 11235, 
+      :drb_server_port => 11235,
       :ring_server_port => 12358,
       :loglevel => Logger::ERROR)
     controller.start
@@ -32,7 +32,7 @@ end
 describe 'Starting and Stopping Providers on the Grid' do
   before(:all) do
     @controller = Controller.new(
-      :drb_server_host => '127.0.0.1', 
+      :drb_server_host => '127.0.0.1',
       :ring_server_host => '127.0.0.1',
       :ring_server_port => 12350,
       :loglevel => Logger::ERROR)
@@ -41,7 +41,7 @@ describe 'Starting and Stopping Providers on the Grid' do
 
   it 'should register a new provider on a specified port' do
     provider = Provider.new(
-      :drb_server_host => '127.0.0.1', 
+      :drb_server_host => '127.0.0.1',
       :ring_server_host => '127.0.0.1',
       :ring_server_port => 12350,
       :loglevel => Logger::ERROR)
@@ -59,9 +59,9 @@ describe 'Using the Grid' do
       :ring_server_port => 12357,
       :loglevel => Logger::ERROR)
     @controller.start
-    1.upto(5) do 
+    1.upto(5) do
       provider = Provider.new(
-        :ring_server_port => 12357, 
+        :ring_server_port => 12357,
         :loglevel => Logger::ERROR, :browser_type => 'safari')
       provider.start
     end
@@ -86,7 +86,7 @@ describe 'Using the Grid' do
   it 'should take any 1 provider on the grid' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:quantity => 1, :take_all => true)
-    grid.size.should == 1 
+    grid.size.should == 1
   end
 
   it 'should take all providers remaining on the grid' do
@@ -102,8 +102,8 @@ describe 'Using the Grid' do
   end
 
   it 'should register 4 new providers on the grid' do
-    1.upto(4) do 
-      provider = Provider.new(:ring_server_port => 12357, 
+    1.upto(4) do
+      provider = Provider.new(:ring_server_port => 12357,
         :loglevel => Logger::ERROR, :browser_type => 'safari')
       provider.start
     end
@@ -132,14 +132,14 @@ describe 'Using the Grid' do
 
   it 'should take any 1 provider on the grid based on specific :architecture' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
-    grid.start(:quantity => 1, 
+    grid.start(:quantity => 1,
       :take_all => true, :architecture => Config::CONFIG['arch'])
     grid.size.should == 1
   end
 
   it 'should fail to find any providers on the grid based on  an unknown :architecture' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
-    grid.start(:quantity => 1, 
+    grid.start(:quantity => 1,
       :take_all => true, :architecture => 'geos-2000')
     grid.size.should == 0
   end
@@ -148,7 +148,7 @@ describe 'Using the Grid' do
     hostname = `hostname`.strip
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:quantity => 1,
-      :take_all => true, 
+      :take_all => true,
       :hostnames => { hostname => '127.0.0.1'}
       )
     grid.size.should == 1
@@ -157,31 +157,17 @@ describe 'Using the Grid' do
   it 'should fail to find any providers on the grid based on unknown :hostnames' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:quantity => 1,
-      :take_all => true, :hostnames => { 
+      :take_all => true, :hostnames => {
         "tokyo" => "127.0.0.1"})
     grid.size.should == 0
   end
 
-  it 'should get the UUID of the last provider on the grid' do
-    grid = Watir::Grid.new(:ring_server_port => 12357)
-    grid.start(:read_all => true)
-    grid.browsers.each do |browser|
-      @uuid = browser[:uuid]
-    end
-  end
-
-  it 'should be able to find a provider by its UUID on the grid' do
-    grid = Watir::Grid.new(:ring_server_port => 12357)
-    grid.start(:read_all => true, :uuid => @uuid)
-    grid.size.should == 1
-  end
-  
-  it 'should take the last provider on the grid and execute some Watir code in Safari' do
+ it 'should take the last provider on the grid and execute some Watir code in Safari' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:quantity => 1, :take_all => true)
     threads = []
     grid.browsers.each do |browser|
-      threads << Thread.new do 
+      threads << Thread.new do
         browser[:hostname].should == `hostname`.strip
         browser[:architecture].should == Config::CONFIG['arch']
         browser[:browser_type].should == 'safari'
@@ -200,5 +186,5 @@ describe 'Using the Grid' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:read_all => true)
     grid.size.should == 0
-  end 
+  end
 end
