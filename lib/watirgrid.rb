@@ -47,7 +47,51 @@ module Watir
       @tuples.each { |tuple| @ring_server.write(tuple) }
     end
 
+    ##
+    # This is a helper method to control a grid.
+    # It involves some general block thuggery and could
+    # honestly benefit from some brutal refactoring...
+    def self.iterate(iterations, params = {}, &block)
+      log  = Logger.new(STDOUT, 'daily')
+      log.level = params[:loglevel] || Logger::ERROR
+      grid = self.new(params)
+      grid.start(:take_all => true)
+      log.debug("Grid size                         : #{grid.size}")
+      log.debug("Grid rampup                       : #{rampup(grid.size, params)} secs")
+      threads = []
+      grid.browsers.each_with_index do |browser, index|
+        sleep rampup(grid.size, params)
+        threads << Thread.new do
+          start = ::Time.now
+          log.debug("Browser #{index+1}##{Thread.current.object_id} start         : #{::Time.now}")
+          log.debug("Browser #{index+1}##{Thread.current.object_id} architecture  : #{browser[:architecture]}")
+          log.debug("Browser #{index+1}##{Thread.current.object_id} type          : #{browser[:browser_type]}")
+          log.debug("Browser #{index+1}##{Thread.current.object_id} hostname      : #{browser[:hostname]}")
+          1.upto(iterations) do |iteration|
+            log.debug("Browser #{index+1}##{Thread.current.object_id} iteration     : #{iteration}")
+            @b = browser[:object].new_browser if iteration == 1
+            yield @b, iteration, "#{index+1}##{Thread.current.object_id}"
+          end
+          log.debug("Browser #{index+1}##{Thread.current.object_id} stop          : #{::Time.now}")
+          log.debug("Browser #{index+1}##{Thread.current.object_id} elapsed       : #{(::Time.now - start).to_i} secs")
+          #@browser.close
+        end
+      end
+      threads.each {|thread| thread.join}
+      grid.release_tuples
+    end
+
     private
+
+    ##
+    # Calculate rampup in seconds
+    def self.rampup(total_threads, params = {})
+      if params[:rampup]
+        params[:rampup] / total_threads
+      else
+        0.5
+      end
+    end
 
     ##
     # Get the external facing interface for this server
@@ -79,7 +123,7 @@ module Watir
         @ring_server = @ring_server.lookup_ring_any
         @controller_uri = "druby://#{@ring_server_host}:#{@ring_server_port}"
       end
-      @log.info("Controller found on :#{@controller_uri}")
+      @log.info("Controller found on   : #{@controller_uri}")
     end
 
     ##

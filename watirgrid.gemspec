@@ -5,9 +5,9 @@
 
 Gem::Specification.new do |s|
   s.name = %q{watirgrid}
-  s.version = "1.0.1"
+  s.version = "1.0.2.pre"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tim Koopmans"]
   s.date = %q{2011-04-04}
   s.description = %q{WatirGrid allows for distributed testing across a grid network using Watir.}

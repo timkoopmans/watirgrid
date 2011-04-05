@@ -188,32 +188,3 @@ describe 'Using the Grid' do
     grid.size.should == 0
   end
 end
-
-describe 'Using the Grid via direct Controller URI' do
-  before(:all) do
-    @controller = Controller.new(
-      :ring_server_port => 12366,
-      :ring_server_host => '127.0.0.1',
-      :drb_server_port => '8866',
-      :loglevel => Logger::ERROR)
-    @controller.start
-    1.upto(5) do
-      provider = Provider.new(
-        :ring_server_port => 12366,
-        :ring_server_host => '127.0.0.1',
-        :loglevel => Logger::ERROR, :browser_type => 'safari')
-      provider.start
-    end
-  end
-
-  after(:all) do
-    @controller.stop
-  end
-
-  it 'should take all providers' do
-    grid = Watir::Grid.new(:controller_uri => 'druby://127.0.0.1:8866', 
-                           :drb_server_host => '127.0.0.1')
-    grid.start(:quantity => 5, :take_all => true, :browser_type => 'safari')
-    grid.size.should == 5
-  end
-end
