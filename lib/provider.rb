@@ -140,6 +140,7 @@ class Provider
     @drb_server_port  = params[:drb_server_port]  || 0
     @ring_server_host = params[:ring_server_host] || external_interface
     @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
+    @controller_uri   = params[:controller_uri]
 
     @renewer = params[:renewer] || Rinda::SimpleRenewer.new
     @browser_type = params[:browser_type] || nil
@@ -183,15 +184,13 @@ class Provider
 
     # locate the Rinda Ring Server via a UDP broadcast
     @log.debug("Attempting to find ring server on : druby://#{@ring_server_host}:#{@ring_server_port}")
-    ring_server = Rinda::RingFinger.new(@ring_server_host, @ring_server_port)
-    ring_server = ring_server.lookup_ring_any
-    @log.info("Ring server found on  : druby://#{@ring_server_host}:#{@ring_server_port}")
+    find_ring_server
 
     # advertise this service on the primary remote tuple space
-    ring_server.write(@tuple, @renewer)
+    @ring_server.write(@tuple, @renewer)
 
     # log DRb server uri
-    @log.info("New tuple registered  : druby://#{@ring_server_host}:#{@ring_server_port}")
+    @log.info("New tuple registered  : #{@controller_uri}")
 
     # wait for explicit stop via ctrl-c
     DRb.thread.join if __FILE__ == $0
@@ -205,6 +204,20 @@ class Provider
   end
 
   private
+
+  ##
+  # Locate the Rinda Ring Server via a UDP broadcast or direct URI
+  def find_ring_server
+    if @controller_uri
+      @ring_server = DRbObject.new(nil, @controller_uri)
+    else
+      @ring_server = Rinda::RingFinger.new(
+        @ring_server_host, @ring_server_port)
+      @ring_server = @ring_server.lookup_ring_any
+      @controller_uri = "druby://#{@ring_server_host}:#{@ring_server_port}"
+    end
+    @log.info("Controller found on   : #{@controller_uri}")
+  end
 
   ##
   # Get the external facing interface for this server

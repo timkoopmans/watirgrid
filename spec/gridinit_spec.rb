@@ -34,9 +34,8 @@ describe 'Using the Grid in GRIDinit style' do
     Watir::Grid.control({:controller_uri => 'druby://127.0.0.1:12357',:loglevel => Logger::DEBUG}) do |browser, id|
       3.times do |iteration|
         browser.goto "http://127.0.0.1/#id=#{id}&iter=#{iteration}"
-        sleep 2
+        sleep 0.5
       end
-      sleep 5
       browser.close
     end
   end
@@ -46,6 +45,19 @@ describe 'Using the Grid in GRIDinit style' do
                            :drb_server_host => '127.0.0.1')
     grid.start(:take_all => true, :browser_type => 'webdriver')
     grid.size.should == 2
+  end
+
+  it 'should add new providers via a direct controller_uri' do
+    provider = Provider.new(
+      :controller_uri => 'druby://127.0.0.1:12357',
+      :drb_server_host => '127.0.0.1',
+      :loglevel => Logger::ERROR,
+      :browser_type => 'webdriver')
+    provider.start
+    grid = Watir::Grid.new(:controller_uri => 'druby://127.0.0.1:12357',
+                           :drb_server_host => '127.0.0.1')
+    grid.start(:take_all => true, :browser_type => 'webdriver')
+    grid.size.should == 1
   end
 
 end

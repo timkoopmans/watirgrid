@@ -110,7 +110,7 @@ module Watir
     end
 
     ##
-    # Locate the Rinda Ring Server via a UDP broadcast
+    # Locate the Rinda Ring Server via a UDP broadcast or direct URI
     def find_ring_server(params = {})
       if @controller_uri
         @ring_server = DRbObject.new(nil, @controller_uri)
