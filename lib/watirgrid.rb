@@ -14,10 +14,10 @@ module Watir
     def initialize(params = {})
       @drb_server_host  = params[:drb_server_host]  || external_interface
       @drb_server_port  = params[:drb_server_port]  || 0
-      @ring_server_host = params[:ring_server_host] || external_interface
+      @controller_uri   = params[:controller_uri]
+      @ring_server_host = params[:ring_server_host] || external_interface unless @controller_uri
       @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
-      @renewer = params[:renewer] || Rinda::SimpleRenewer.new
-
+      @renewer          = params[:renewer] || Rinda::SimpleRenewer.new
       logfile = params[:logfile] || STDOUT
       @log  = Logger.new(logfile, 'daily')
       @log.level = params[:loglevel] || Logger::ERROR
@@ -31,7 +31,7 @@ module Watir
     # Start required services
     def start(params = {})
       start_drb_server
-      find_ring_server
+      find_ring_server(params)
       get_tuples(params)
     end
 
@@ -53,7 +53,7 @@ module Watir
     # Get the external facing interface for this server
     def external_interface
       begin
-        UDPSocket.open {|s| s.connect('watir.com', 1); s.addr.last }
+        UDPSocket.open {|s| s.connect('ping.watirgrid.com', 1); s.addr.last }
       rescue
         '127.0.0.1'
       end
@@ -70,11 +70,16 @@ module Watir
 
     ##
     # Locate the Rinda Ring Server via a UDP broadcast
-    def find_ring_server
-      @ring_server = Rinda::RingFinger.new(
-        @ring_server_host, @ring_server_port)
-      @ring_server = @ring_server.lookup_ring_any
-      @log.info("Ring server found on : druby://#{@ring_server_host}:#{@ring_server_port}")
+    def find_ring_server(params = {})
+      if @controller_uri
+        @ring_server = DRbObject.new(nil, @controller_uri)
+      else
+        @ring_server = Rinda::RingFinger.new(
+          @ring_server_host, @ring_server_port)
+        @ring_server = @ring_server.lookup_ring_any
+        @controller_uri = "druby://#{@ring_server_host}:#{@ring_server_port}"
+      end
+      @log.info("Controller found on :#{@controller_uri}")
     end
 
     ##
