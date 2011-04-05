@@ -23,7 +23,6 @@ describe 'Using the Grid in GRIDinit style' do
     @controller.stop
   end
 
-
   it 'should take 1 provider via a direct controller_uri' do
     grid = Watir::Grid.new(:controller_uri => 'druby://127.0.0.1:12357',
                            :drb_server_host => '127.0.0.1')
@@ -31,14 +30,15 @@ describe 'Using the Grid in GRIDinit style' do
     grid.size.should == 3
   end
 
-  it 'should control the grid using an iterate helper method' do
-    Watir::Grid.iterate(2, {
-      :controller_uri => 'druby://127.0.0.1:12357',
-      :loglevel => Logger::DEBUG}) do |browser, iteration, id|
-          browser.goto "http://127.0.0.1/#iteration=#{iteration}&id=#{id}"
-          sleep 5
-      #browser = Watir::Browser.start("about:blank")
+  it 'should control the grid using a helper method' do
+    Watir::Grid.control({:controller_uri => 'druby://127.0.0.1:12357',:loglevel => Logger::DEBUG}) do |browser, id|
+      3.times do |iteration|
+        browser.goto "http://127.0.0.1/#id=#{id}&iter=#{iteration}"
+        sleep 2
       end
+      sleep 5
+      browser.close
+    end
   end
 
   it 'should take all remaining providers via a direct controller_uri' do

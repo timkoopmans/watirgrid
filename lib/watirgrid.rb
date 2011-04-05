@@ -51,7 +51,7 @@ module Watir
     # This is a helper method to control a grid.
     # It involves some general block thuggery and could
     # honestly benefit from some brutal refactoring...
-    def self.iterate(iterations, params = {}, &block)
+    def self.control(params = {}, &block)
       log  = Logger.new(STDOUT, 'daily')
       log.level = params[:loglevel] || Logger::ERROR
       grid = self.new(params)
@@ -67,11 +67,8 @@ module Watir
           log.debug("Browser #{index+1}##{Thread.current.object_id} architecture  : #{browser[:architecture]}")
           log.debug("Browser #{index+1}##{Thread.current.object_id} type          : #{browser[:browser_type]}")
           log.debug("Browser #{index+1}##{Thread.current.object_id} hostname      : #{browser[:hostname]}")
-          1.upto(iterations) do |iteration|
-            log.debug("Browser #{index+1}##{Thread.current.object_id} iteration     : #{iteration}")
-            @b = browser[:object].new_browser if iteration == 1
-            yield @b, iteration, "#{index+1}##{Thread.current.object_id}"
-          end
+          @browser = browser[:object].new_browser
+          yield @browser, "#{index+1}##{Thread.current.object_id}"
           log.debug("Browser #{index+1}##{Thread.current.object_id} stop          : #{::Time.now}")
           log.debug("Browser #{index+1}##{Thread.current.object_id} elapsed       : #{(::Time.now - start).to_i} secs")
           #@browser.close
