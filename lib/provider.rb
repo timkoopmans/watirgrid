@@ -169,7 +169,7 @@ class Provider
 
     # obtain DRb Server uri
     @drb_server_uri = drb_server.uri
-    @log.info("DRb server started on : #{@drb_server_uri}")
+    @log.info("Provider started on   : #{@drb_server_uri}")
 
     # create a service tuple
     @tuple = [

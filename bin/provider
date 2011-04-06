@@ -26,7 +26,7 @@ OptionParser.new do |opts|
     options[:ring_server_port] = r
   end
   opts.on("-c URI", "--controller-uri", String,
-  "Optional druby Controller URI e.g. druby://127.0.0.1:11235 to bypass Ring Server") do |h|
+  "Specify Controller URI e.g. druby://127.0.0.1:11235 to bypass Ring Server") do |h|
     options[:controller_uri] = h || nil
   end
   opts.on("-b TYPE", "--browser-type", String,

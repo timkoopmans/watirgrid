@@ -65,7 +65,7 @@ class Controller
 
     # obtain DRb Server uri
     @drb_server_uri = drb_server.uri
-    @log.info("DRb server started on : #{@drb_server_uri}")
+    @log.info("Controller started on : #{@drb_server_uri}")
 
     # start the Ring Server
     ring_server = Rinda::RingServer.new(tuple_space,
@@ -86,7 +86,7 @@ class Controller
   # Stop the controller by shutting down the DRb service
   def stop
     DRb.stop_service
-    @log.info("DRb server stopped on: #{@drb_server_uri}")
+    @log.info("Controller stopped on: #{@drb_server_uri}")
   end
 
   private
