@@ -16,12 +16,13 @@ class Listener
 
   def start
     DRb.start_service
-    ring_server = DRbObject.new(nil, ARGV[0])
+    ring_server = DRbObject.new(nil, @controller_uri)
     service = ring_server.read([:WatirGrid, nil, nil, nil, nil, nil, nil])
     observers = []
     observers << ring_server.notify('write',[:WatirGrid, nil, nil, nil, nil, nil, nil], nil)
     observers << ring_server.notify('take', [:WatirGrid, nil, nil, nil, nil, nil, nil], nil)
     observers << ring_server.notify('delete', [:WatirGrid, nil, nil, nil, nil, nil, nil], nil)
+    @log.debug("Listener started on   : #{@controller_uri}")
     threads = []
     observers.each do |observer|
       threads << Thread.new do
