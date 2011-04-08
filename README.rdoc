@@ -37,10 +37,9 @@ You will now be able to execute commands across remote browsers on your grid net
 
 e.g.
   Watir::Grid.control(:controller_uri => 'druby://143.238.105.61:11355') do |browser, id|
-      browser.goto("http://www.google.com")
-      browser.text_field(:name, 'q').set("watirgrid")
-      browser.button(:name, "btnI").click
-    end
+    browser.goto("http://www.google.com")
+    browser.text_field(:name, 'q').set("watirgrid")
+    browser.button(:name, "btnI").click
   end
 
 You may wish to host the controller and providers on different machines in a real scenario. You can specify things like server hostnames, ports and access control lists for each of the different types of servers. For more help see:
