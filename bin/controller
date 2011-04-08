@@ -45,7 +45,7 @@ OptionParser.new do |opts|
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
-  end          
+  end
   end.parse!
 
 controller = Controller.new(

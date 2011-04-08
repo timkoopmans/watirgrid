@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'controller'
+require 'provider'
+require 'listener'
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: listener [options]"
+  opts.separator ""
+  opts.separator "Specific options:"
+  opts.on("-c URI", "--controller-uri", String,
+  "Specify Controller URI e.g. druby://127.0.0.1:11235 to listen in on") do |h|
+    options[:controller_uri] = h || nil
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+  end.parse!
+
+listener = Listener.new(:controller_uri   => options[:controller_uri])
+listener.start
+DRb.thread.join

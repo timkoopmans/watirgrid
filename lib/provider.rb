@@ -156,7 +156,9 @@ class Provider
   # Start providing watir objects on the ring server
   def start
     # create a DRb 'front' object
+    @log.debug("About to create a watir_provider")
     watir_provider = Watir::Provider.new(@browser_type)
+    @log.debug("watir_provider is #{watir_provider}")
     architecture = Config::CONFIG['arch']
     hostname = ENV['SERVER_NAME'] || %x{hostname}.strip
 

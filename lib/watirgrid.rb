@@ -1,5 +1,6 @@
 require 'controller'
 require 'provider'
+require 'listener'
 
 module Watir
 
