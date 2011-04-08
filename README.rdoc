@@ -42,7 +42,6 @@ e.g.
       browser.button(:name, "btnI").click
     end
   end
-  threads.each {|thread| thread.join}
 
 You may wish to host the controller and providers on different machines in a real scenario. You can specify things like server hostnames, ports and access control lists for each of the different types of servers. For more help see:
   $  controller --help
