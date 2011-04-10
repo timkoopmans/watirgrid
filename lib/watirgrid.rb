@@ -107,7 +107,7 @@ module Watir
       drb_server = DRb.start_service(
         "druby://#{@drb_server_host}:#{@drb_server_port}")
       @drb_server_uri = drb_server.uri
-      @log.info("DRb server started on : #{@drb_server_uri}")
+      @log.info("Watir Grid started on : #{@drb_server_uri}")
     end
 
     ##

@@ -156,9 +156,8 @@ class Provider
   # Start providing watir objects on the ring server
   def start
     # create a DRb 'front' object
-    @log.debug("About to create a watir_provider")
     watir_provider = Watir::Provider.new(@browser_type)
-    @log.debug("watir_provider is #{watir_provider}")
+    @log.debug("Watir provider is     : #{watir_provider}")
     architecture = Config::CONFIG['arch']
     hostname = ENV['SERVER_NAME'] || %x{hostname}.strip
 
@@ -185,14 +184,14 @@ class Provider
               ]
 
     # locate the Rinda Ring Server via a UDP broadcast
-    @log.debug("Attempting to find ring server on : druby://#{@ring_server_host}:#{@ring_server_port}")
+    @log.debug("Broadcast Ring Server : druby://#{@ring_server_host}:#{@ring_server_port}")
     find_ring_server
 
     # advertise this service on the primary remote tuple space
     @ring_server.write(@tuple, @renewer)
 
     # log DRb server uri
-    @log.info("New tuple registered  : #{@controller_uri}")
+    @log.info("Provider registered   : #{@controller_uri}")
 
     # wait for explicit stop via ctrl-c
     DRb.thread.join if __FILE__ == $0
@@ -202,7 +201,7 @@ class Provider
   # Stop the provider by shutting down the DRb service
   def stop
     DRb.stop_service
-    @log.info("DRb server stopped on : #{@drb_server_uri}")
+    @log.info("Provider stopped on   : #{@drb_server_uri}")
   end
 
   private

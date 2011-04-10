@@ -5,39 +5,39 @@ require 'provider'
 require 'optparse'
 
 options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: provider [options]"
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: provider -b BROWSER_TYPE [options]"
   opts.separator ""
   opts.separator "Specific options:"
-  opts.on("-H HOST", "--drb-server-host", String,
+  opts.on("-b", "--browser-type TYPE",
+  "Specify browser type to register {ie|firefox|safari|webdriver}") do |b|
+    options[:browser_type] = b
+  end
+  opts.on("-c", "--controller-uri [URI]",
+  "Specify Controller URI e.g. druby://127.0.0.1:11235") do |h|
+    options[:controller_uri] = h || nil
+  end
+  opts.on("-H", "--drb-server-host [HOST]",
   "Specify DRb Server interface to host on") do |h|
     options[:drb_server_host] = h || nil
   end
-  opts.on("-d PORT", "--drb-server-port", Integer,
+  opts.on("-d", "--drb-server-port [PORT]",
     "Specify DRb Server port to listen on") do |d|
       options[:drb_server_port] = d
   end
-  opts.on("-h HOST", "--ring-server-host", String,
+  opts.on("-h", "--ring-server-host [HOST]",
   "Specify Ring Server host to connect to") do |h|
     options[:ring_server_host] = h || nil
   end
-  opts.on("-r PORT", "--ring-server-port", Integer,
+  opts.on("-r", "--ring-server-port [PORT]",
   "Specify Ring Server port to broadcast on") do |r|
     options[:ring_server_port] = r
   end
-  opts.on("-c URI", "--controller-uri", String,
-  "Specify Controller URI e.g. druby://127.0.0.1:11235 to bypass Ring Server") do |h|
-    options[:controller_uri] = h || nil
-  end
-  opts.on("-b TYPE", "--browser-type", String,
-  "Specify browser type to register {ie|firefox|safari}") do |b|
-    options[:browser_type] = b
-  end
-  opts.on("-a ACLS", "--access-control-list", Array,
+  opts.on("-a", "--access-control-list [ACL]", Array,
     "Specify a comma separated Access Control List") do |a|
       options[:acls] = a
   end
-  opts.on("-l LEVEL", "--log-level", String,
+  opts.on("-l", "--log-level [LEVEL]",
   "Specify log level {DEBUG|INFO|ERROR}") do |l|
     case l
     when 'DEBUG'
@@ -54,7 +54,22 @@ OptionParser.new do |opts|
     puts opts
     exit
   end
-end.parse!
+end
+
+begin
+  optparse.parse!
+  mandatory = [:browser_type]
+  missing = mandatory.select{ |param| options[param].nil? }
+  if not missing.empty?
+    puts "Missing options: #{missing.join(', ')}"
+    puts optparse
+    exit
+  end
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+  puts $!.to_s
+  puts optparse
+  exit
+end
 
 provider = Provider.new(
   :drb_server_host  => options[:drb_server_host],

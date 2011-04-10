@@ -46,8 +46,6 @@ class Controller
     @log  = Logger.new(logfile, 'daily')
     @log.level = params[:loglevel] || Logger::INFO
     @log.datetime_format = "%Y-%m-%d %H:%M:%S "
-
-    @log.debug("DRB Server Port #{@drb_server_port}\nRing Server Port #{@ring_server_port}")
   end
 
   ##
@@ -73,7 +71,7 @@ class Controller
 
     # obtain Ring Server uri
     @ring_server_uri = ring_server.uri
-    @log.info("Ring server started on: #{@ring_server_uri}")
+    @log.debug("Ring Server started   : #{@ring_server_uri}")
 
     # abort all threads on an exception
     Thread.abort_on_exception = true
@@ -86,7 +84,7 @@ class Controller
   # Stop the controller by shutting down the DRb service
   def stop
     DRb.stop_service
-    @log.info("Controller stopped on: #{@drb_server_uri}")
+    @log.info("Controller stopped on : #{@drb_server_uri}")
   end
 
   private

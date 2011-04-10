@@ -9,33 +9,33 @@ OptionParser.new do |opts|
   opts.banner = "Usage: controller [options]"
   opts.separator ""
   opts.separator "Specific options:"
-  opts.on("-H HOST", "--drb-server-host", String, 
+  opts.on("-H", "--drb-server-host [HOST]", String,
   "Specify DRb Server interface to host on") do |h|
     options[:drb_server_host] = h || nil
   end
-  opts.on("-d PORT", "--drb-server-port", Integer, 
+  opts.on("-d", "--drb-server-port [PORT]", Integer,
     "Specify DRb Server port to listen on") do |d|
       options[:drb_server_port] = d
-  end              
-  opts.on("-h HOST", "--ring-server-host", String, 
+  end
+  opts.on("-h", "--ring-server-host [HOST]", String,
   "Specify Ring Server interface to host on") do |h|
     options[:ring_server_host] = h || nil
   end
-  opts.on("-r PORT", "--ring-server-port", Integer, 
+  opts.on("-r", "--ring-server-port [PORT]", Integer,
     "Specify Ring Server port to listen on") do |r|
-      options[:ring_server_port] = r 
+      options[:ring_server_port] = r
   end
-  opts.on("-a ACLS", "--access-control-list", Array,
+  opts.on("-a", "--access-control-list [ACLS]", Array,
     "Specify a comma separated Access Control List") do |a|
       options[:acls] = a
   end
-  opts.on("-l LEVEL", "--log-level", String, 
+  opts.on("-l", "--log-level [LEVEL]", String,
     "Specify log level {DEBUG|INFO|ERROR}") do |l|
       case l
       when 'DEBUG'
         options[:loglevel] = Logger::DEBUG
       when 'INFO'
-        options[:loglevel] = Logger::INFO 
+        options[:loglevel] = Logger::INFO
       when 'ERROR'
         options[:loglevel] = Logger::ERROR
       else
@@ -49,9 +49,9 @@ OptionParser.new do |opts|
   end.parse!
 
 controller = Controller.new(
-  :drb_server_host => options[:drb_server_host],
-  :drb_server_port  => options[:drb_server_port]  || 11235, 
-  :ring_server_host => options[:ring_server_host], 
+  :drb_server_host  => options[:drb_server_host],
+  :drb_server_port  => options[:drb_server_port]  || 11235,
+  :ring_server_host => options[:ring_server_host],
   :ring_server_port => options[:ring_server_port] || 12358,
   :acls => options[:acls] || %w{ allow all },
   :loglevel => options[:loglevel]
