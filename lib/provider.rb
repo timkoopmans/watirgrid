@@ -39,7 +39,7 @@ module Watir
       end
     end
 
-    def new_browser(webdriver_browser_type = nil)
+    def new_browser(webdriver_browser_type = :firefox)
       case @browser.inspect
       when "Selenium::WebDriver"
         @browser.for webdriver_browser_type
