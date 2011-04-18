@@ -33,12 +33,24 @@ module Watir
         when :webdriver
           require 'watir-webdriver'
           @browser = Watir::Browser
+        when :selenium
+          require 'selenium-webdriver'
+          @browser = Selenium::WebDriver
       end
     end
 
     def new_browser(webdriver_browser_type = nil)
-      if webdriver_browser_type
-        @browser.new(webdriver_browser_type)
+      case @browser.inspect
+      when "Selenium::WebDriver"
+        @browser.for webdriver_browser_type
+      when "Watir::Browser"
+        @browser.new webdriver_browser_type
+      when "Watir::Safari"
+        @browser.new
+      when "FireWatir::Firefox"
+        @browser.new
+      when "Watir::IE"
+        @browser.new
       else
         @browser.new
       end
