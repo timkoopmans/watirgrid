@@ -33,6 +33,10 @@ module Watir
         when :webdriver
           require 'watir-webdriver'
           @browser = Watir::Browser
+        when :webdriver_performance
+          require 'watir-webdriver'
+          require 'watir-webdriver-performance'
+          @browser = Watir::Browser
         when :selenium
           require 'selenium-webdriver'
           @browser = Selenium::WebDriver
