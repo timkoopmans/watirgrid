@@ -37,6 +37,10 @@ module Watir
           require 'watir-webdriver'
           require 'watir-webdriver-performance'
           @browser = Watir::Browser
+        when :webdriver_remote
+          require 'watir-webdriver'
+          require 'selenium-webdriver'
+          @browser = Watir::Browser
         when :selenium
           require 'selenium-webdriver'
           @browser = Selenium::WebDriver
@@ -46,9 +50,19 @@ module Watir
     def new_browser(webdriver_browser_type = :firefox)
       case @browser.inspect
       when "Selenium::WebDriver"
-        @browser.for webdriver_browser_type
+        if webdriver_browser_type == :htmlunit
+          caps = Selenium::WebDriver::Remote::Capabilities.htmlunit(:javascript_enabled => true)
+          @browser.for(:remote, :url => "http://127.0.0.1:4444/wd/hub", :desired_capabilities => caps)
+        else
+          @browser.for webdriver_browser_type
+        end
       when "Watir::Browser"
-        @browser.new webdriver_browser_type
+        if webdriver_browser_type == :htmlunit
+          caps = Selenium::WebDriver::Remote::Capabilities.htmlunit(:javascript_enabled => true)
+          @browser.new(:remote, :url => "http://127.0.0.1:4444/wd/hub", :desired_capabilities => caps)
+        else
+          @browser.new webdriver_browser_type
+        end
       when "Watir::Safari"
         @browser.new
       when "FireWatir::Firefox"

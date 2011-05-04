@@ -50,33 +50,21 @@ module Watir
 
     ##
     # This is a helper method to control a grid.
-    # It involves some general block thuggery and could
-    # honestly benefit from some brutal refactoring...
     def self.control(params = {}, &block)
       log  = Logger.new(STDOUT, 'daily')
       log.level = params[:loglevel] || Logger::ERROR
       grid = self.new(params)
-      grid.start(:take_all => true)
-      log.debug("Grid size                         : #{grid.size}")
-      log.debug("Grid rampup                       : #{rampup(grid.size, params)} secs")
+      grid.start(:read_all => true)
       threads = []
       grid.browsers.each_with_index do |browser, index|
         sleep rampup(grid.size, params)
         threads << Thread.new do
           start = ::Time.now
-          log.debug("Browser #{index+1}##{Thread.current.object_id} start         : #{::Time.now}")
-          log.debug("Browser #{index+1}##{Thread.current.object_id} architecture  : #{browser[:architecture]}")
-          log.debug("Browser #{index+1}##{Thread.current.object_id} type          : #{browser[:browser_type]}")
-          log.debug("Browser #{index+1}##{Thread.current.object_id} hostname      : #{browser[:hostname]}")
           @browser = browser[:object].new_browser
-          yield @browser, "#{index+1}##{Thread.current.object_id}"
-          log.debug("Browser #{index+1}##{Thread.current.object_id} stop          : #{::Time.now}")
-          log.debug("Browser #{index+1}##{Thread.current.object_id} elapsed       : #{(::Time.now - start).to_i} secs")
-          #@browser.close
+          yield @browser, "#{index}"
         end
       end
       threads.each {|thread| thread.join}
-      grid.release_tuples
     end
 
     private
