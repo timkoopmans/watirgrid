@@ -1,39 +1,51 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib'))
 require 'watirgrid'
-require 'rspec/expectations'; 
+require 'rspec/expectations';
+require 'watir-webdriver-performance'
 
-Given /^I have created and started a Controller$/ do
-  controller = Controller.new(
-    :loglevel => Logger::ERROR)
-  controller.start
+controller = Controller.new(
+  :ring_server_port => 12357,
+  :loglevel => Logger::ERROR)
+controller.start
+
+provider = Provider.new(
+  :ring_server_port => 12357,
+  :loglevel => Logger::ERROR, :browser_type => 'webdriver')
+provider.start
+
+Given /^(\d+) users open "([^"]*)"$/ do |quantity, browser|
+  params={}
+  params[:ring_server_port] = 12357
+  # optionall connect via a controller_uri environment variable
+  # params[:controller_uri]  = ENV["controller_uri"]
+  params[:browser]         = browser        # type of webdriver browser to spawn
+  params[:quantity]        = quantity.to_i  # max number of browsers to use
+  params[:rampup]          = 10             # seconds
+  @grid = Watir::Grid.new(params)
+  @grid.start(:initiate => true)
 end
 
-Then /^I should be able to create and start (\d+) "(.+?)" Providers$/ do |total, browser_type|
-  1.upto(total.to_i) do 
-    provider = Provider.new(
-      :loglevel => Logger::ERROR, :browser_type => browser_type)
-    provider.start
+Given /^navigate to the portal$/ do
+  @grid.iterate {|browser| browser.goto "http://gridinit.com/examples/logon.html" }
+end
+
+When /^they enter their credentials$/ do
+  @grid.iterate do |browser|
+    browser.text_field(:name => "email").set "tim@mahenterprize.com"
+    browser.text_field(:name => "password").set "mahsecretz"
+    browser.button(:type => "submit").click
   end
 end
 
-Given /^I have created and started a Grid with (\d+) Providers$/ do |total|
-  @grid = Watir::Grid.new
-  @grid.start(:take_all => true)
-  @grid.browsers.size.should == total.to_i
+Then /^they should see their account settings$/ do
+  @grid.iterate do |browser|
+    browser.text.should =~ /Maybe I should get a real Gridinit account/
+  end
 end
 
-Then /^I should be able to control the following browsers in parallel:$/ do |table|
-  browsers = table.raw.collect {|e| e.to_s.downcase.to_sym}
-  threads = []
-    @grid.browsers.each_with_index do |browser, index|
-      threads << Thread.new do
-        b = browser[:object].new_browser(browsers[index])
-        b.goto("http://www.google.com")
-        b.text_field(:name, 'q').set("watirgrid")
-        b.button(:name, "btnI").click
-        b.close
-      end
-    end
-    threads.each {|thread| thread.join}
+Then /^the response time should be less than (d+) seconds$/ do |response_time|
+  @grid.iterate do |browser|
+    browser.performance.summary[:response_time].should < response_time.to_i * 1000
+  end
 end

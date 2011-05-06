@@ -10,7 +10,7 @@ module Watir
   # and instatiating remote browser objects on nominated providers.
   class Grid
 
-    attr_accessor :drb_server_uri, :ring_server, :browsers, :tuples
+    attr_accessor :drb_server_uri, :ring_server, :browsers, :tuples, :providers
 
     def initialize(params = {})
       @drb_server_host  = params[:drb_server_host]  || external_interface
@@ -23,9 +23,10 @@ module Watir
       @log  = Logger.new(logfile, 'daily')
       @log.level = params[:loglevel] || Logger::ERROR
       @log.datetime_format = "%Y-%m-%d %H:%M:%S "
-
+      @webdriver_browser_type = params[:browser].to_sym if params[:browser]
       @browsers = []
       @tuples = []
+      @providers = []
     end
 
     ##
@@ -34,6 +35,7 @@ module Watir
       start_drb_server
       find_ring_server(params)
       get_tuples(params)
+      setup if params[:initiate]
     end
 
     ##
@@ -46,6 +48,27 @@ module Watir
     # Write tuple back to tuplespace when finished using it
     def release_tuples
       @tuples.each { |tuple| @ring_server.write(tuple) }
+    end
+
+    ##
+    # Instantiate new browser object on each of the remote providers
+    def setup
+      @browsers.each_with_index do |browser, index|
+        sleep 0.15
+        @providers[index] ||= browser[:object].new_browser(@webdriver_browser_type)
+      end
+    end
+
+    ##
+    # Iterate with a block over each of the remote providers
+    def iterate &block
+      threads = []
+      @providers.each do |browser|
+        threads << Thread.new do
+          yield browser
+        end
+      end
+      threads.each {|thread| thread.join}
     end
 
     ##

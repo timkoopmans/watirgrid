@@ -19,8 +19,17 @@ describe 'Using the Grid Control method' do
   it 'should control a grid' do
     Watir::Grid.control(:ring_server_port => 12357) do |browser, index|
       p "I am browser index #{index}"
-      browser.goto "google.com"
+      browser.goto "http://google.com"
       p browser.title
+      browser.close
+    end
+  end
+
+  it 'should iterate over a grid' do
+    grid = Watir::Grid.new(:ring_server_port => 12357)
+    grid.start(:initiate => true)
+    grid.iterate do |browser|
+      browser.goto "http://google.com"
       browser.close
     end
   end
