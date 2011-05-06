@@ -4,8 +4,7 @@ Feature: User logons
   able to logon and access the portal in 3 seconds
 
   Scenario: Logon with 50 users in 1 minute
-    Given 50 users open "chrome"
-    And navigate to the portal
+    Given users navigate to the portal
     When they enter their credentials
     Then they should see their account settings
     And the response time should be less than 3 seconds
