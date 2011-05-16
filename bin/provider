@@ -10,7 +10,7 @@ optparse = OptionParser.new do |opts|
   opts.separator ""
   opts.separator "Specific options:"
   opts.on("-b", "--browser-type TYPE",
-  "Specify browser type to register {ie|firefox|safari|webdriver}") do |b|
+  "Specify driver for browser type to register {watir|firewatir|safariwatir|webdriver|zombie}") do |b|
     options[:browser_type] = b
   end
   opts.on("-c", "--controller-uri [URI]",

@@ -41,6 +41,9 @@ module Watir
           require 'watir-webdriver'
           require 'selenium-webdriver'
           @browser = Watir::Browser
+        when :zombie
+          require 'watir-zombie'
+          @browser = Watir::Zombie
         when :selenium
           require 'selenium-webdriver'
           @browser = Selenium::WebDriver
