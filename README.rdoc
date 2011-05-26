@@ -32,16 +32,16 @@ The *providers* make remote Watir objects available to the tuple space hosted by
 
 === Simple Example
 
-Pick a server to host the 'controller' for the ring server and execute the following:
+Pick a server to host the *controller* for the ring server and execute the following:
   $ controller
 
-This should find your external facing IP and start the corresponding DRb and Ring Servers:
+This should find your external facing IP and start the *controller*:
   I, [2011-04-09 18:06:19 #1971]  INFO -- : Controller started on : druby://127.0.0.1:11235
 
-On each client PC, host the 'provider' for the distributed (DRb) Watir objects
+On each remote machine, host the *provider* for the distributed (DRb) Watir object:
   $  provider -d watir -c druby://127.0.0.1:11235
 
-This should find the recently started Ring Server and register a tuple for the Watir object:
+This should find the recently started *controller* and register the *provider*:
   I, [2011-04-09 18:06:26 #1972]  INFO -- : Provider started on   : druby://127.0.0.1:11236
   I, [2011-04-09 18:06:26 #1972]  INFO -- : Controller found on   : druby://127.0.0.1:11235
   I, [2011-04-09 18:06:26 #1972]  INFO -- : Provider registered   : druby://127.0.0.1:11235
