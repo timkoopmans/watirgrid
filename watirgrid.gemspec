@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{watirgrid}
-  s.version = "1.1.3.pre"
+  s.version = "1.1.3"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tim Koopmans"]
-  s.date = %q{2011-05-16}
+  s.date = %q{2011-05-26}
   s.description = %q{WatirGrid allows for distributed testing across a grid network using Watir.}
   s.email = %q{tim.koops@gmail.com}
   s.executables = ["listener", "controller", "provider"]
@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
-    "EXAMPLES.rdoc",
     "LICENSE",
     "README.rdoc",
     "Rakefile",
@@ -40,13 +39,11 @@ Gem::Specification.new do |s|
     "lib/provider.rb",
     "lib/watirgrid.rb",
     "rdoc/logo.png",
-    "spec/control_spec.rb",
-    "spec/grid_spec.rb",
+    "spec/grid_control_spec.rb",
+    "spec/grid_management_spec.rb",
     "spec/memory_spec.rb",
     "spec/selenium_webdriver_spec.rb",
     "spec/spec_helper.rb",
-    "spec/utilities_spec.rb",
-    "spec/webdriver_remote_spec.rb",
     "spec/webdriver_spec.rb",
     "watirgrid.gemspec"
   ]
@@ -62,13 +59,11 @@ Gem::Specification.new do |s|
     "examples/cucumber/support/env.rb",
     "examples/parallel/cucumber/step_definitions/example_steps.rb",
     "examples/parallel/cucumber/support/env.rb",
-    "spec/control_spec.rb",
-    "spec/grid_spec.rb",
+    "spec/grid_control_spec.rb",
+    "spec/grid_management_spec.rb",
     "spec/memory_spec.rb",
     "spec/selenium_webdriver_spec.rb",
     "spec/spec_helper.rb",
-    "spec/utilities_spec.rb",
-    "spec/webdriver_remote_spec.rb",
     "spec/webdriver_spec.rb"
   ]
 
