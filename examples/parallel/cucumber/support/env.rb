@@ -9,7 +9,7 @@ ENV["controller_uri"] = "druby://10.0.1.3:11235"
 if ENV["GRID"] then
   params = {}
   params[:controller_uri]   = ENV["controller_uri"]
-  params[:browser]          = 'chrome' # type of webdriver browser to spawn
+  params[:browser_type]     = 'chrome' # type of webdriver browser to spawn
   grid ||= Watir::Grid.new(params)
   grid.start(:initiate => true, :quantity => 1, :take_all => true)
 else

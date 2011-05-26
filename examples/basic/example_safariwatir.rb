@@ -8,24 +8,15 @@ controller = Controller.new
 controller.start
 
 # Start a Provider with SafariWatir
-provider = Provider.new(:browser_type => 'safari')
+provider = Provider.new(:driver => 'safariwatir')
 provider.start
 
-# Start a Grid
-grid = Watir::Grid.new
-grid.start(:take_all => true)
-
 # Control the Providers via the Grid
-# We only have one Provider on the Grid so no real need for threads
-# however keeping the thread construct for example only
-threads = []
-  grid.browsers.each_with_index do |browser, index|
-    threads << Thread.new do
-      b = browser[:object].new_browser
-      b.goto("http://www.google.com")
-      b.text_field(:name, 'q').set("watirgrid")
-      b.button(:name, "btnI").click
-      b.close
-    end
-  end
-threads.each {|thread| thread.join}
+Watir::Grid.control do |browser, index|
+  p "I am browser index #{index}"
+  browser.goto "http://google.com"
+  p browser.title
+  browser.text_field(:name, 'q').set("watirgrid")
+  browser.button(:name, "btnI").click
+  browser.close
+end

@@ -9,32 +9,16 @@ controller.start
 
 # Start 2 Providers with WebDriver
 1.upto(2) do
-  provider = Provider.new(:browser_type => 'webdriver')
+  provider = Provider.new(:driver => 'webdriver')
   provider.start
 end
 
-# Start another Grid
-grid = Watir::Grid.new
-grid.start(:take_all => true)
-
-# Control the first Provider via the Grid using Firefox
-# Note when we have a WebDriver object we also need to specify the target 
-# browser in new_browser method
-thread = Thread.new do 
-  b = grid.browsers[0][:object].new_browser(:firefox)
-  b.goto("http://google.com")
-  b.text_field(:name, 'q').set("watirgrid")
-  b.button(:name, "btnI").click
-  b.close
+# Control the Providers via the Grid
+Watir::Grid.control(:browser_type => 'firefox') do |browser, index|
+  p "I am browser index #{index}"
+  browser.goto "http://google.com"
+  p browser.title
+  browser.text_field(:name, 'q').set("watirgrid")
+  browser.button(:name, "btnI").click
+  browser.close
 end
-thread.join
-
-# Control the second Provider via the Grid, this time using Chrome
-thread = Thread.new do 
-  b = grid.browsers[1][:object].new_browser(:chrome)
-  b.goto("http://google.com")
-  b.text_field(:name, 'q').set("watirgrid")
-  b.button(:name, "btnI").click
-  b.close
-end
-thread.join
