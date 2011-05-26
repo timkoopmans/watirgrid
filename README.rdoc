@@ -18,16 +18,16 @@ Typically you will host one controller on a central machine. You will normally c
 The *providers* make remote Watir objects available to the tuple space hosted by the *controller*. Typically you will host one or many providers on your grid network, for example, each PC may become a single provider of a Watir tuple in the form of an Internet Explorer, Firefox, Safari or WebDriver browser object.
 
 ==== WatirGrid IS
-A lightweight, pure Ruby implementation of distributed computing using DRb and Rinda.
-A simple way to control remote Watir objects in parallel.
-Cross platform friendly and works on Windows, OSX or Linux.
-Open source, you're already looking in the right place if you want the source code.
-WebDriver friendly, thanks to the wire protocol, WatirGrid happily runs with WebDriver implementations such as watir-webdriver and selenium-webdriver.
+- A lightweight, pure Ruby implementation of distributed computing using DRb and Rinda.
+- A simple way to control remote Watir objects in parallel.
+- Cross platform friendly and works on Windows, OSX or Linux.
+- Open source, you're already looking in the right place if you want the source code.
+- WebDriver friendly, thanks to the wire protocol, WatirGrid happily runs with WebDriver implementations such as watir-webdriver and selenium-webdriver.
 
 ==== WatirGrid IS NOT
-A "grid management" system. If you're looking to control individual resources, such as starting and stopping workstations or VMs you should look at the commercial implementation at Gridinit.com[http://gridinit.com]
+- A "grid management" system. If you're looking to control individual resources, such as starting and stopping workstations or VMs you should look at the commercial implementation at Gridinit.com[http://gridinit.com]
 
-Selenium Grid. If you're looking for a full blown implementation of distributed computing you should take a look at Selenium Grid[http://selenium-grid.seleniumhq.org/]
+- Selenium Grid. If you're looking for a full blown implementation of distributed computing you should take a look at Selenium Grid[http://selenium-grid.seleniumhq.org/]
 
 
 === Simple Example
