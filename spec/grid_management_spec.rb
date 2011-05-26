@@ -44,7 +44,8 @@ describe 'Starting and Stopping Providers on the Grid' do
       :drb_server_host => '127.0.0.1',
       :ring_server_host => '127.0.0.1',
       :ring_server_port => 12350,
-      :loglevel => Logger::ERROR)
+      :loglevel => Logger::ERROR,
+      :driver => 'safariwatir')
     provider.start
   end
 
@@ -62,7 +63,7 @@ describe 'Using the Grid' do
     1.upto(5) do
       provider = Provider.new(
         :ring_server_port => 12357,
-        :loglevel => Logger::ERROR, :browser_type => 'safari')
+        :loglevel => Logger::ERROR, :driver => 'safariwatir')
       provider.start
     end
   end
@@ -101,32 +102,32 @@ describe 'Using the Grid' do
     grid.size.should == 0
   end
 
-  it 'should register 4 new providers on the grid' do
-    1.upto(4) do
+  it 'should register 3 new providers on the grid' do
+    1.upto(3) do
       provider = Provider.new(:ring_server_port => 12357,
-        :loglevel => Logger::ERROR, :browser_type => 'safari')
+        :loglevel => Logger::ERROR, :driver => 'safariwatir')
       provider.start
     end
   end
 
-  it 'should take any 1 provider based on :browser_type from the grid' do
+  it 'should take any 1 provider based on :driver from the grid' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:quantity => 1,
-      :take_all => true, :browser_type => 'safari')
+      :take_all => true, :driver => 'safariwatir')
     grid.size.should == 1
   end
 
-  it 'should fail to find any providers on the grid based on a specific :browser_type' do
+  it 'should fail to find any providers on the grid based on a specific :driver' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:quantity => 1,
-      :take_all => true, :browser_type => 'firefox')
+      :take_all => true, :driver => 'watir')
     grid.size.should == 0
   end
 
-  it 'should fail to find any providers on the grid based on an unknown :browser_type' do
+  it 'should fail to find any providers on the grid based on an unknown :driver' do
     grid = Watir::Grid.new(:ring_server_port => 12357)
     grid.start(:quantity => 1,
-      :take_all => true, :browser_type => 'penguin')
+      :take_all => true, :driver => 'operawatir')
     grid.size.should == 0
   end
 
@@ -160,26 +161,6 @@ describe 'Using the Grid' do
       :take_all => true, :hostnames => {
         "tokyo" => "127.0.0.1"})
     grid.size.should == 0
-  end
-
- it 'should take the last provider on the grid and execute some Watir code in Safari' do
-    grid = Watir::Grid.new(:ring_server_port => 12357)
-    grid.start(:quantity => 1, :take_all => true)
-    threads = []
-    grid.browsers.each do |browser|
-      threads << Thread.new do
-        browser[:hostname].should == `hostname`.strip
-        browser[:architecture].should == Config::CONFIG['arch']
-        browser[:browser_type].should == 'safari'
-        b = browser[:object].new_browser
-        b.goto("http://www.google.com")
-        b.text_field(:name, 'q').set("watirgrid")
-        #b.button(:name, "btnI").click
-        b.close
-      end
-    end
-    threads.each {|thread| thread.join}
-    grid.size.should == 1
   end
 
   it 'should find no more providers on the grid' do

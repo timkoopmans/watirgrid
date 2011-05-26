@@ -13,20 +13,20 @@ module Watir
     attr_accessor :drb_server_uri, :ring_server, :browsers, :tuples, :providers
 
     def initialize(params = {})
-      @drb_server_host  = params[:drb_server_host]  || external_interface
-      @drb_server_port  = params[:drb_server_port]  || 0
-      @controller_uri   = params[:controller_uri]
-      @ring_server_host = params[:ring_server_host] || external_interface unless @controller_uri
-      @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
-      @renewer          = params[:renewer] || Rinda::SimpleRenewer.new
-      logfile = params[:logfile] || STDOUT
-      @log  = Logger.new(logfile, 'daily')
-      @log.level = params[:loglevel] || Logger::ERROR
-      @log.datetime_format = "%Y-%m-%d %H:%M:%S "
-      @webdriver_browser_type = params[:browser].to_sym if params[:browser]
-      @browsers = []
-      @tuples = []
-      @providers = []
+      @drb_server_host      = params[:drb_server_host]  || external_interface
+      @drb_server_port      = params[:drb_server_port]  || 0
+      @controller_uri       = params[:controller_uri]
+      @ring_server_host     = params[:ring_server_host] || external_interface unless @controller_uri
+      @ring_server_port     = params[:ring_server_port] || Rinda::Ring_PORT
+      @renewer              = params[:renewer] || Rinda::SimpleRenewer.new
+      logfile               = params[:logfile] || STDOUT
+      @log                  = Logger.new(logfile, 'daily')
+      @log.level            = params[:loglevel] || Logger::ERROR
+      @log.datetime_format  = "%Y-%m-%d %H:%M:%S "
+      @browser_type         = params[:browser_type]
+      @browsers             = []
+      @tuples               = []
+      @providers            = []
     end
 
     ##
@@ -55,7 +55,7 @@ module Watir
     def setup
       @browsers.each_with_index do |browser, index|
         sleep 0.15
-        @providers[index] ||= browser[:object].new_browser(@webdriver_browser_type)
+        @providers[index] ||= browser[:object].new_browser @browser_type
       end
     end
 
@@ -83,7 +83,7 @@ module Watir
         sleep rampup(grid.size, params)
         threads << Thread.new do
           start = ::Time.now
-          @browser = browser[:object].new_browser
+          @browser = browser[:object].new_browser params[:browser_type]
           yield @browser, "#{index}"
         end
       end
@@ -176,7 +176,7 @@ module Watir
         nil, # provider description
         nil, # hostname
         params[:architecture],
-        params[:browser_type]
+        params[:driver]
         ])
     end
 
@@ -212,7 +212,7 @@ module Watir
       tuple_hash[:description]  = tuple[3]
       tuple_hash[:hostname]     = tuple[4]
       tuple_hash[:architecture] = tuple[5]
-      tuple_hash[:browser_type] = tuple[6]
+      tuple_hash[:driver]       = tuple[6]
       tuple_hash
     end
 

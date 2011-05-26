@@ -8,39 +8,42 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: controller [options]"
   opts.separator ""
-  opts.separator "Specific options:"
-  opts.on("-H", "--drb-server-host [HOST]", String,
-  "Specify DRb Server interface to host on") do |h|
+  opts.separator "Advanced Options:"
+  opts.on("-h", "--drb HOST",
+          "Specify the DRb host for this controller to bind to.") do |h|
     options[:drb_server_host] = h || nil
   end
-  opts.on("-d", "--drb-server-port [PORT]", Integer,
-    "Specify DRb Server port to listen on") do |d|
-      options[:drb_server_port] = d
+  opts.on("-p", "--drb-port PORT",
+          "Specify the DRb port for this controller to listen on.") do |p|
+      options[:drb_server_port] = p
   end
-  opts.on("-h", "--ring-server-host [HOST]", String,
-  "Specify Ring Server interface to host on") do |h|
+  opts.on("-H", "--ring-server HOST",
+          "Specify the ring server host for this controller to bind to.") do |h|
     options[:ring_server_host] = h || nil
   end
-  opts.on("-r", "--ring-server-port [PORT]", Integer,
-    "Specify Ring Server port to listen on") do |r|
-      options[:ring_server_port] = r
+  opts.on("-P", "--ring-server-port PORT",
+          "Specify the ring server port for this controller to listen on.") do |p|
+    options[:ring_server_port] = p
   end
-  opts.on("-a", "--access-control-list [ACLS]", Array,
-    "Specify a comma separated Access Control List") do |a|
+  opts.on("-a", "--access-control-list ACL", Array,
+    "Specify a comma separated Access Control List.") do |a|
       options[:acls] = a
   end
-  opts.on("-l", "--log-level [LEVEL]", String,
-    "Specify log level {DEBUG|INFO|ERROR}") do |l|
-      case l
-      when 'DEBUG'
-        options[:loglevel] = Logger::DEBUG
-      when 'INFO'
-        options[:loglevel] = Logger::INFO
-      when 'ERROR'
-        options[:loglevel] = Logger::ERROR
-      else
-        options[:loglevel] = Logger::ERROR
-      end
+  opts.on("-l", "--log LEVEL",
+          "Specify the logging level:",
+          "  - DEBUG",
+          "  - INFO",
+          "  - ERROR") do |l|
+    case l
+    when 'DEBUG'
+      options[:loglevel] = Logger::DEBUG
+    when 'INFO'
+      options[:loglevel] = Logger::INFO
+    when 'ERROR'
+      options[:loglevel] = Logger::ERROR
+    else
+      options[:loglevel] = Logger::ERROR
+    end
   end
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts

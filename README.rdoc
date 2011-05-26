@@ -7,12 +7,13 @@ To install WatirGrid:
   gem install watirgrid
 
 === The Basics
-WatirGrid is built on Rinda which implements the Linda distributed computing paradigm in Ruby. According to Wikipedia: “Linda is a model of coordination and communication among several parallel processes operating upon objects stored in and retrieved from shared, virtual, associative memory.”
 
-In other words, WatirGrid allows multiple parallel processes to *_provide_* remote Watir objects in the form of tuple spaces across a grid network. This grid network is *_controlled_* by a ring server.
+WatirGrid allows a local client to control remote Watir objects in parallel, hosted by *providers* on a grid network, via a central *controller*.
 
 ==== Key Terminology
-The *controller* implements a repository of tuples (tuple space) that can be accessed concurrently. The controller also hosts a *ring* *server* which advertises these tuples across a grid network making it loosely coupled. Typically you will host one controller on a central machine. You will normally connect to this controller via a direct URI. You can also find this controller by its ring server, using a UDP broadcast for the ring server port.
+The *controller* implements a repository of tuples (tuple space) that can be accessed concurrently. The controller also hosts a *ring* *server* which advertises these tuples across a grid network making it loosely coupled. 
+
+Typically you will host one controller on a central machine. You will normally connect to this controller via a contoller_uri. You can also find this controller by its ring server, using a UDP broadcast for the ring server port.
 
 The *providers* make remote Watir objects available to the tuple space hosted by the *controller*. Typically you will host one or many providers on your grid network, for example, each PC may become a single provider of a Watir tuple in the form of an Internet Explorer, Firefox, Safari or WebDriver browser object.
 

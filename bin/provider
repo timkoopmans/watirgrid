@@ -6,39 +6,57 @@ require 'optparse'
 
 options = {}
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: provider -b BROWSER_TYPE [options]"
+  opts.banner = "Usage: provider -d DRIVER [options]"
   opts.separator ""
-  opts.separator "Specific options:"
-  opts.on("-b", "--browser-type TYPE",
-  "Specify driver for browser type to register {watir|firewatir|safariwatir|webdriver|zombie}") do |b|
-    options[:browser_type] = b
+  opts.separator "Basic Options:"
+  opts.on("-d", "--driver TYPE",
+          "Specify driver type to use on this provider:",
+          "  - watir",
+          "  - webdriver",
+          "  - selenium",
+          "  - firewatir",
+          "  - safariwatir") do |d|
+    options[:driver] = d
   end
-  opts.on("-c", "--controller-uri [URI]",
-  "Specify Controller URI e.g. druby://127.0.0.1:11235") do |h|
-    options[:controller_uri] = h || nil
+  opts.on("-c", "--controller URI",
+          "Specify the controller URI to register this provider on e.g.:",
+          "  - druby://127.0.0.1:11235") do |c|
+    options[:controller_uri] = c || nil
   end
-  opts.on("-H", "--drb-server-host [HOST]",
-  "Specify DRb Server interface to host on") do |h|
+  opts.on("-b", "--browser TYPE",
+          "Specify the browser type to start when using webdriver or selenium:",
+          "  - firefox",
+          "  - chrome",
+          "  - ie") do |b|
+    options[:browser_type] = b || nil
+  end
+  opts.separator ""
+  opts.separator "Advanced Options:"
+  opts.on("-h", "--drb HOST",
+          "Specify the DRb host for this provider to bind to.") do |h|
     options[:drb_server_host] = h || nil
   end
-  opts.on("-d", "--drb-server-port [PORT]",
-    "Specify DRb Server port to listen on") do |d|
-      options[:drb_server_port] = d
+  opts.on("-p", "--drb-port PORT",
+          "Specify the DRb port for this provider to listen on.") do |p|
+      options[:drb_server_port] = p
   end
-  opts.on("-h", "--ring-server-host [HOST]",
-  "Specify Ring Server host to connect to") do |h|
+  opts.on("-H", "--ring-server HOST",
+          "Optionally specify the ring server host if not using controller URI.") do |h|
     options[:ring_server_host] = h || nil
   end
-  opts.on("-r", "--ring-server-port [PORT]",
-  "Specify Ring Server port to broadcast on") do |r|
-    options[:ring_server_port] = r
+  opts.on("-P", "--ring-server-port PORT",
+          "Optionally specify the ring server port if not using controller URI.") do |p|
+    options[:ring_server_port] = p
   end
-  opts.on("-a", "--access-control-list [ACL]", Array,
-    "Specify a comma separated Access Control List") do |a|
+  opts.on("-a", "--access-control-list ACL", Array,
+    "Specify a comma separated Access Control List.") do |a|
       options[:acls] = a
   end
-  opts.on("-l", "--log-level [LEVEL]",
-  "Specify log level {DEBUG|INFO|ERROR}") do |l|
+  opts.on("-l", "--log LEVEL",
+          "Specify the logging level:",
+          "  - DEBUG",
+          "  - INFO",
+          "  - ERROR") do |l|
     case l
     when 'DEBUG'
       options[:loglevel] = Logger::DEBUG
@@ -58,7 +76,7 @@ end
 
 begin
   optparse.parse!
-  mandatory = [:browser_type]
+  mandatory = [:driver]
   missing = mandatory.select{ |param| options[param].nil? }
   if not missing.empty?
     puts "Missing options: #{missing.join(', ')}"
@@ -76,7 +94,7 @@ provider = Provider.new(
   :drb_server_port  => options[:drb_server_port]  || 11236,
   :ring_server_host => options[:ring_server_host],
   :ring_server_port => options[:ring_server_port] || 12358,
-  :browser_type     => options[:browser_type] || nil,
+  :driver           => options[:driver] || nil,
   :controller_uri   => options[:controller_uri] || nil,
   :acls             => options[:acls] || %w{ allow all },
   :loglevel         => options[:loglevel])

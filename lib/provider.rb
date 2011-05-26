@@ -11,23 +11,22 @@ module Watir
 
   ##
   # Extend Watir with a Provider class
-  # to determine which browser type is supported by the
+  # to determine which driver type is supported by the
   # remote DRb process. This returns the DRb front object.
   class Provider
 
     include DRbUndumped # all objects will be proxied, not copied
     attr_reader :browser
 
-    def initialize(browser = nil)
-      browser = (browser || 'tmp').downcase.to_sym
-      case browser
-        when :safari, :safariwatir
+    def initialize(driver=nil)
+      case driver.downcase.to_sym
+        when :safariwatir
           require 'safariwatir'
           @browser = Watir::Safari
-        when :firefox, :firewatir
+        when :firewatir
           require 'firewatir'
           @browser = FireWatir::Firefox
-        when :ie, :watir
+        when :watir
           require 'watir'
           @browser = Watir::IE
         when :webdriver
@@ -41,30 +40,27 @@ module Watir
           require 'watir-webdriver'
           require 'selenium-webdriver'
           @browser = Watir::Browser
-        when :zombie
-          require 'watir-zombie'
-          @browser = Watir::Zombie
         when :selenium
           require 'selenium-webdriver'
           @browser = Selenium::WebDriver
       end
     end
 
-    def new_browser(webdriver_browser_type = :firefox)
+    def new_browser(browser_type='firefox')
       case @browser.inspect
       when "Selenium::WebDriver"
-        if webdriver_browser_type == :htmlunit
+        if browser_type == :htmlunit
           caps = Selenium::WebDriver::Remote::Capabilities.htmlunit(:javascript_enabled => true)
           @browser.for(:remote, :url => "http://127.0.0.1:4444/wd/hub", :desired_capabilities => caps)
         else
-          @browser.for webdriver_browser_type
+          @browser.for browser_type.to_sym
         end
       when "Watir::Browser"
-        if webdriver_browser_type == :htmlunit
+        if @browser_type == :htmlunit
           caps = Selenium::WebDriver::Remote::Capabilities.htmlunit(:javascript_enabled => true)
           @browser.new(:remote, :url => "http://127.0.0.1:4444/wd/hub", :desired_capabilities => caps)
         else
-          @browser.new webdriver_browser_type
+          @browser.new browser_type.to_sym
         end
       when "Watir::Safari"
         @browser.new
@@ -75,85 +71,6 @@ module Watir
       else
         @browser.new
       end
-    end
-
-    ##
-    # Get a list of running browsers (optionally specified by browser)
-    # 'iexplore','firefox','firefox-bin','chrome','safari','opera'
-    def get_running_browsers(browser=nil)
-      browsers = browser || \
-        ['iexplore','firefox','firefox-bin','chrome','safari','opera']
-      case Config::CONFIG['arch']
-      when /mswin/
-        %x[tasklist].split(/\s+/).collect { |x| x[/\w+/]} \
-          & browsers.collect { |x| x.downcase }
-      when /linux|darwin/
-        %x[ps -A | grep -v ruby].split(/\/|\s+/).collect { |x| x.downcase} \
-          & browsers
-      end
-    end
-
-    def get_running_processes
-      %x[ps -A | grep -v ruby].split(/\/|\s+/).collect.uniq
-    end
-
-    ##
-    # Kill any browser running
-    def kill_all_browsers
-      case Config::CONFIG['arch']
-      when /mswin/
-        browsers = ['iexplore.exe', 'firefox.exe', 'chrome.exe']
-        browsers.each { |browser| %x[taskkill /F /IM #{browser}] }
-      when /linux/
-        browsers = ['firefox', 'chrome', 'opera']
-        browsers.each { |browser| %x[killall -r #{browser}] }
-      when /darwin/
-        browsers = ['firefox-bin', 'Chrome', 'Safari']
-        browsers.each { |browser| %x[pkill -9 #{browser}] }
-      end
-    end
-
-    ##
-    # Kill all browsers specified by browser name
-    # Windows: 'iexplore.exe', 'firefox.exe', 'chrome.exe'
-    # Linux: 'firefox', 'chrome', 'opera'
-    # OSX: 'firefox-bin', 'Chrome', 'Safari'
-    def kill_browser(browser)
-      case Config::CONFIG['arch']
-      when /mswin/
-        %x[taskkill /F /IM #{browser}]
-      when /linux/
-        %x[killall -r #{browser}]
-      when /darwin/
-        %x[killall -m #{browser}]
-      end
-    end
-
-    ##
-    # Start firefox (with an optional bin path) using the -jssh extension
-    def start_firefox_jssh(path=nil)
-      case Config::CONFIG['arch']
-      when /mswin/
-        bin = path || "C:/Program Files/Mozilla Firefox/firefox.exe"
-      when /linux/
-        bin = path || "/usr/bin/firefox"
-      when /darwin/
-        bin = path || "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-      end
-      # fork off and die!
-      Thread.new {system(bin, "about:blank", "-jssh")}
-    end
-
-    ##
-    # Get the logged-in user
-    def get_logged_in_user
-      %x[whoami].chomp
-    end
-
-    ##
-    # Grep for a process (Linux/OSX-with-port only)
-    def process_grep(pattern)
-      %x[pgrep -l #{pattern}].split(/\n/)
     end
 
     def renew_provider
@@ -174,22 +91,21 @@ class Provider
     @ring_server_host = params[:ring_server_host] || external_interface
     @ring_server_port = params[:ring_server_port] || Rinda::Ring_PORT
     @controller_uri   = params[:controller_uri]
-
-    @renewer = params[:renewer] || Rinda::SimpleRenewer.new
-    @browser_type = params[:browser_type] || nil
+    @renewer          = params[:renewer]          || Rinda::SimpleRenewer.new
+    @driver           = params[:driver]           || 'webdriver'
+    @browser_type     = params[:browser_type]     || 'firefox'
 
     logfile = params[:logfile] || STDOUT
     @log  = Logger.new(logfile, 'daily')
     @log.level = params[:loglevel] || Logger::INFO
     @log.datetime_format = "%Y-%m-%d %H:%M:%S "
-
   end
 
   ##
-  # Start providing watir objects on the ring server
-  def start
+  # Start providing Watir objects on the ring server
+  def start(params = {})
     # create a DRb 'front' object
-    watir_provider = Watir::Provider.new(@browser_type)
+    watir_provider = Watir::Provider.new(@driver)
     @log.debug("Watir provider is     : #{watir_provider}")
     architecture = Config::CONFIG['arch']
     hostname = ENV['SERVER_NAME'] || %x{hostname}.strip
@@ -213,8 +129,8 @@ class Provider
                 'A watir provider',
                 hostname,
                 architecture,
-                @browser_type
-              ]
+                @driver
+    ]
 
     # locate the Rinda Ring Server via a UDP broadcast
     @log.debug("Broadcast Ring Server : druby://#{@ring_server_host}:#{@ring_server_port}")

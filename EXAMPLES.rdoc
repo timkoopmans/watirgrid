@@ -21,7 +21,7 @@ This will bind the controller to your external facing interface and register the
 e.g.
   DRb server started on : druby://143.238.105.61:11235
   Ring server started on: druby://143.238.105.61:12358
-  
+
 === Start on specific interface or ports
 To start a controller on specific interfaces or ports:
   $  controller -H 127.0.0.1 -h 127.0.0.1 -d 12345 -r 54321
@@ -30,7 +30,7 @@ This will bind the controller to the localhost (127.0.0.1) with the DRb server l
 e.g.
   DRb server started on : druby://127.0.0.1:12345
   Ring server started on: druby://127.0.0.1:54321
-  
+
 
 === Start with access control list
 To start a controller with an access control list:
@@ -80,7 +80,7 @@ This will deny all access by default and allow access to this provider on localh
 
 === Start with a specific browser supported
 By default, the provider will try to instantiate a browser object based on availability with your operating system e.g. Internet Explorer, Firefox or Safari. You can force provision of a set browser type as follows:
-  $  provider -b safari
+  $  provider -d webdriver
   
 This will provide a Safari browser object. Other options are:
   $  provider -b ie

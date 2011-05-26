@@ -8,7 +8,7 @@ describe 'Using the Grid Control method' do
     @controller.start
     provider = Provider.new(
       :ring_server_port => 12357,
-      :loglevel => Logger::ERROR, :browser_type => 'safari')
+      :loglevel => Logger::ERROR, :driver => 'safariwatir')
     provider.start
   end
 
