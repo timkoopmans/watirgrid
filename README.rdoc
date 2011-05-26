@@ -17,6 +17,19 @@ Typically you will host one controller on a central machine. You will normally c
 
 The *providers* make remote Watir objects available to the tuple space hosted by the *controller*. Typically you will host one or many providers on your grid network, for example, each PC may become a single provider of a Watir tuple in the form of an Internet Explorer, Firefox, Safari or WebDriver browser object.
 
+==== WatirGrid IS
+A lightweight, pure Ruby implementation of distributed computing using DRb and Rinda.
+A simple way to control remote Watir objects in parallel.
+Cross platform friendly and works on Windows, OSX or Linux.
+Open source, you're already looking in the right place if you want the source code.
+WebDriver friendly, thanks to the wire protocol, WatirGrid happily runs with WebDriver implementations such as watir-webdriver and selenium-webdriver.
+
+==== WatirGrid IS NOT
+A "grid management" system. If you're looking to control individual resources, such as starting and stopping workstations or VMs you should look at the commercial implementation at Gridinit.com[http://gridinit.com]
+
+Selenium Grid. If you're looking for a full blown implementation of distributed computing you should take a look at Selenium Grid[http://selenium-grid.seleniumhq.org/]
+
+
 === Simple Example
 
 Pick a server to host the 'controller' for the ring server and execute the following:
@@ -26,7 +39,7 @@ This should find your external facing IP and start the corresponding DRb and Rin
   I, [2011-04-09 18:06:19 #1971]  INFO -- : Controller started on : druby://127.0.0.1:11235
 
 On each client PC, host the 'provider' for the distributed (DRb) Watir objects
-  $  provider -b ie -c druby://127.0.0.1:11235
+  $  provider -d watir -c druby://127.0.0.1:11235
 
 This should find the recently started Ring Server and register a tuple for the Watir object:
   I, [2011-04-09 18:06:26 #1972]  INFO -- : Provider started on   : druby://127.0.0.1:11236
@@ -48,26 +61,46 @@ e.g.
 You may wish to host the controller and providers on different machines in a real scenario. You can specify things like server hostnames, ports and access control lists for each of the different types of servers. For more help see:
   $  controller --help
   Usage: controller [options]
-  Specific options:
-      -H, --drb-server-host [HOST]       Specify DRb Server interface to host on
-      -d, --drb-server-port [PORT]       Specify DRb Server port to listen on
-      -h, --ring-server-host [HOST]      Specify Ring Server interface to host on
-      -r, --ring-server-port [PORT]      Specify Ring Server port to listen on
-      -a, --access-control-list [ACLS]   Specify a comma separated Access Control List
-      -l, --log-level [LEVEL]            Specify log level {DEBUG|INFO|ERROR}
+
+  Advanced Options:
+      -h, --drb HOST                   Specify the DRb host for this controller to bind to.
+      -p, --drb-port PORT              Specify the DRb port for this controller to listen on.
+      -H, --ring-server HOST           Specify the ring server host for this controller to bind to.
+      -P, --ring-server-port PORT      Specify the ring server port for this controller to listen on.
+      -a, --access-control-list ACL    Specify a comma separated Access Control List
+      -l, --log LEVEL                  Specify the logging level:
+                                         - DEBUG
+                                         - INFO
+                                         - ERROR
           --help                       Show this message
 
   $  provider --help
-  Usage: Usage: provider -b BROWSER_TYPE [options]
-  Specific options:
-      -b, --browser-type TYPE          Specify browser type to register {ie|firefox|safari|webdriver}
-      -c, --controller-uri [URI]       Specify Controller URI e.g. druby://127.0.0.1:11235
-      -H, --drb-server-host [HOST]     Specify DRb Server interface to host on
-      -d, --drb-server-port [PORT]     Specify DRb Server port to listen on
-      -h, --ring-server-host [HOST]    Specify Ring Server host to connect to
-      -r, --ring-server-port [PORT]    Specify Ring Server port to broadcast on
-      -a, --access-control-list [ACL]  Specify a comma separated Access Control List
-      -l, --log-level [LEVEL]          Specify log level {DEBUG|INFO|ERROR}
+  Usage: provider -d DRIVER [options]
+
+  Basic Options:
+      -d, --driver TYPE                Specify driver type to use on this provider:
+                                         - watir
+                                         - webdriver
+                                         - selenium
+                                         - firewatir
+                                         - safariwatir
+      -c, --controller URI             Specify the controller URI to register this provider on e.g.:
+                                         - druby://127.0.0.1:11235
+      -b, --browser TYPE               Specify the browser type to start when using webdriver or selenium:
+                                         - firefox
+                                         - chrome
+                                         - ie
+
+  Advanced Options:
+      -h, --drb HOST                   Specify the DRb host for this provider to bind to.
+      -p, --drb-port PORT              Specify the DRb port for this provider to listen on.
+      -H, --ring-server HOST           Optionally specify the ring server host if not using controller URI.
+      -P, --ring-server-port PORT      Optionally specify the ring server port if not using controller URI.
+      -a, --access-control-list ACL    Specify a comma separated Access Control List
+      -l, --log LEVEL                  Specify the logging level:
+                                         - DEBUG
+                                         - INFO
+                                         - ERROR
           --help                       Show this message
 
 == Copyright
