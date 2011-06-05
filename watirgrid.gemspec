@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{watirgrid}
-  s.version = "1.1.3"
+  s.version = "1.1.4.pre"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tim Koopmans"]
-  s.date = %q{2011-05-26}
+  s.date = %q{2011-06-05}
   s.description = %q{WatirGrid allows for distributed testing across a grid network using Watir.}
   s.email = %q{tim.koops@gmail.com}
   s.executables = ["listener", "controller", "provider"]
@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
     "bin/provider",
     "examples/basic/example_safariwatir.rb",
     "examples/basic/example_webdriver.rb",
-    "examples/basic/example_webdriver_remote.rb",
     "examples/cucumber/example.feature",
     "examples/cucumber/step_definitions/example_steps.rb",
     "examples/cucumber/support/env.rb",
@@ -41,6 +40,7 @@ Gem::Specification.new do |s|
     "rdoc/logo.png",
     "spec/grid_control_spec.rb",
     "spec/grid_management_spec.rb",
+    "spec/grid_mixed_spec.rb",
     "spec/memory_spec.rb",
     "spec/selenium_webdriver_spec.rb",
     "spec/spec_helper.rb",
@@ -49,23 +49,8 @@ Gem::Specification.new do |s|
   ]
   s.homepage = %q{http://github.com/90kts/watirgrid}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.4.2}
+  s.rubygems_version = %q{1.6.2}
   s.summary = %q{WatirGrid: Web Application Testing in Ruby across a grid network.}
-  s.test_files = [
-    "examples/basic/example_safariwatir.rb",
-    "examples/basic/example_webdriver.rb",
-    "examples/basic/example_webdriver_remote.rb",
-    "examples/cucumber/step_definitions/example_steps.rb",
-    "examples/cucumber/support/env.rb",
-    "examples/parallel/cucumber/step_definitions/example_steps.rb",
-    "examples/parallel/cucumber/support/env.rb",
-    "spec/grid_control_spec.rb",
-    "spec/grid_management_spec.rb",
-    "spec/memory_spec.rb",
-    "spec/selenium_webdriver_spec.rb",
-    "spec/spec_helper.rb",
-    "spec/webdriver_spec.rb"
-  ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
