@@ -95,6 +95,7 @@ provider = Provider.new(
   :ring_server_host => options[:ring_server_host],
   :ring_server_port => options[:ring_server_port] || 12358,
   :driver           => options[:driver] || nil,
+  :browser_type     => options[:browser_type] || nil,
   :controller_uri   => options[:controller_uri] || nil,
   :acls             => options[:acls] || %w{ allow all },
   :loglevel         => options[:loglevel])

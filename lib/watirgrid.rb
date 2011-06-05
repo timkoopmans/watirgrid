@@ -55,7 +55,7 @@ module Watir
     def setup
       @browsers.each_with_index do |browser, index|
         sleep 0.15
-        @providers[index] ||= browser[:object].new_browser @browser_type
+        @providers[index] ||= browser[:object].new_browser((browser[:browser_type] || @browser_type))
       end
     end
 
@@ -83,7 +83,7 @@ module Watir
         sleep rampup(grid.size, params)
         threads << Thread.new do
           start = ::Time.now
-          @browser = browser[:object].new_browser params[:browser_type]
+          @browser = browser[:object].new_browser((params[:browser_type] || browser[:browser_type]))
           yield @browser, "#{index}"
         end
       end
@@ -176,7 +176,8 @@ module Watir
         nil, # provider description
         nil, # hostname
         params[:architecture],
-        params[:driver]
+        params[:driver],
+        params[:browser_type]
         ])
     end
 
@@ -213,6 +214,7 @@ module Watir
       tuple_hash[:hostname]     = tuple[4]
       tuple_hash[:architecture] = tuple[5]
       tuple_hash[:driver]       = tuple[6]
+      tuple_hash[:browser_type] = tuple[7]
       tuple_hash
     end
 

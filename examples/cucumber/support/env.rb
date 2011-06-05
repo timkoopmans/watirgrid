@@ -10,7 +10,7 @@ controller = Controller.new(
   :loglevel => Logger::ERROR)
 controller.start
 
-1.times do
+2.times do
   provider = Provider.new(
     :ring_server_port => 12357,
     :loglevel => Logger::ERROR, :driver => 'webdriver')
@@ -29,7 +29,7 @@ if ENV["GRID"] then
   # params[:controller_uri]  = ENV["controller_uri"]
 
   # Now for the other params
-  params[:browser_type]    = 'chrome' # type of webdriver browser to spawn
+  params[:browser_type]    = 'firefox' # type of webdriver browser to spawn
   params[:quantity]        = 20       # max number of browsers to use
   params[:rampup]          = 10       # seconds
   grid ||= Watir::Grid.new(params)

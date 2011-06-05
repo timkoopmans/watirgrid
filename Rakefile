@@ -9,13 +9,12 @@ begin
     gem.email = "tim.koops@gmail.com"
     gem.homepage = "http://github.com/90kts/watirgrid"
     gem.authors = ["Tim Koopmans"]
-    gem.version = "1.1.3"
+    gem.version = "1.1.4.pre"
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
-require 'spec/rake/spectask'
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""

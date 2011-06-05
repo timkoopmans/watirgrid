@@ -129,7 +129,8 @@ class Provider
                 'A watir provider',
                 hostname,
                 architecture,
-                @driver
+                @driver,
+                @browser_type
     ]
 
     # locate the Rinda Ring Server via a UDP broadcast
