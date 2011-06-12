@@ -91,7 +91,7 @@ end
 
 provider = Provider.new(
   :drb_server_host  => options[:drb_server_host],
-  :drb_server_port  => options[:drb_server_port]  || 11236,
+  :drb_server_port  => options[:drb_server_port]  || 0,
   :ring_server_host => options[:ring_server_host],
   :ring_server_port => options[:ring_server_port] || 12358,
   :driver           => options[:driver] || nil,
