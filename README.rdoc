@@ -36,18 +36,18 @@ Strings are no longer enumerable in Ruby 1.9.2 so you may see errors like this:
 
 The Ruby core library for Rinda is broken as it incorrectly uses the each method on a string. Without resorting to monkey patches, you can avoid this error in watirgrid by not using the DRb broadcast methods used in a lookup. This happens when you *do* *not* specify a controller URI. To avoid this:
 
-- Specify the controller URI if starting a provider from the command line
+Specify the controller URI if starting a provider from the command line
 
   provider -c druby://203.51.48.187:11235 -d webdriver -b chrome
   I, [2011-11-01 20:25:25 #49264]  INFO -- : Provider started on   : druby://203.51.48.187:54289
   I, [2011-11-01 20:25:25 #49264]  INFO -- : Controller found on   : druby://203.51.48.187:11235
   I, [2011-11-01 20:25:25 #49264]  INFO -- : Provider registered   : druby://203.51.48.187:11235
 
-- Specify the controller URI if staring a provider programatically
+Specify the controller URI if staring a provider programatically
 
   provider = Provider.new(:driver => 'webdriver', :controller_uri => 'druby://203.51.48.187:11235')
 
-- And always specify the controller URI when instantiating your grid!
+And always specify the controller URI when instantiating your grid!
 
   Watir::Grid.control(:browser_type => 'firefox', :controller_uri => 'druby://127.0.0.1:1234') do |browser, index|
     browser.goto "http://google.com"
