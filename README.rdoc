@@ -33,7 +33,7 @@ Strings are no longer enumerable in Ruby 1.9.2 so you may see errors like this:
 
 ```
 NoMethodError: undefined method each' for "192.168.0.134":String
-from C:/RailsInstaller/Ruby1.9.2/lib/ruby/1.9.1/rinda/ring.rb:180:inlookup_ring'
+from C:/RailsInstaller/Ruby1.9.2/lib/ruby/1.9.1/rinda/ring.rb:180:inlookup_ring
 ```
 
 The Ruby core library for Rinda is broken as it incorrectly uses the each method on a string. Without resorting to monkey patches, you can avoid this error in watirgrid by not using the DRb broadcast methods used in a lookup. This happens when you *don't* specify a controller URI. To avoid this:
