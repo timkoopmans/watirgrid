@@ -40,31 +40,21 @@ The Ruby core library for Rinda is broken as it incorrectly uses the each method
 
 1. Specify the controller URI if starting a provider from the command line
 
-```
-provider -c druby://203.51.48.187:11235 -d webdriver -b chrome
-I, [2011-11-01 20:25:25 #49264]  INFO -- : Provider started on   : druby://203.51.48.187:54289
-I, [2011-11-01 20:25:25 #49264]  INFO -- : Controller found on   : druby://203.51.48.187:11235
-I, [2011-11-01 20:25:25 #49264]  INFO -- : Provider registered   : druby://203.51.48.187:11235
-```
+  provider -c druby://203.51.48.187:11235 -d webdriver -b chrome
+  I, [2011-11-01 20:25:25 #49264]  INFO -- : Provider started on   : druby://203.51.48.187:54289
+  I, [2011-11-01 20:25:25 #49264]  INFO -- : Controller found on   : druby://203.51.48.187:11235
+  I, [2011-11-01 20:25:25 #49264]  INFO -- : Provider registered   : druby://203.51.48.187:11235
 
 2. Specify the controller URI if staring a provider programatically
 
-```
-provider = Provider.new(:driver => 'webdriver', :controller_uri => 'druby://203.51.48.187:11235')
-```
+  provider = Provider.new(:driver => 'webdriver', :controller_uri => 'druby://203.51.48.187:11235')
 
 3. And always specify the controller URI when instantiating your grid!
 
-```
-Watir::Grid.control(:browser_type => 'firefox', :controller_uri => 'druby://127.0.0.1:1234') do |browser, index|
-  p "I am browser index #{index}"
-  browser.goto "http://google.com"
-  p browser.title
-  browser.text_field(:name, 'q').set("watirgrid")
-  browser.button(:name, "btnI").click
-  browser.close
-end
-```
+  Watir::Grid.control(:browser_type => 'firefox', :controller_uri => 'druby://127.0.0.1:1234') do |browser, index|
+    browser.goto "http://google.com"
+    browser.close
+  end
 
 Starting without a controller URI will probably be deprecated in the next release anyway.
 
