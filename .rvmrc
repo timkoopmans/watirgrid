@@ -1,2 +1,2 @@
 install_on_use_flag=1
-rvm --create use ruby-1.9.2-p180@watirgrid
+rvm --create use ruby-1.9.3-p194@watirgrid
