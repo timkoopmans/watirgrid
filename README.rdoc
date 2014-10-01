@@ -1,3 +1,7 @@
+= Please Note
+
+This project is no longer actively maintained. Recommend you look at Selenium Grid as an alternative.
+
 = WatirGrid
 
 WatirGrid allows for distributed testing across a grid network using Watir.
